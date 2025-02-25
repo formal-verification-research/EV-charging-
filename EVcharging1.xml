@@ -45,7 +45,6 @@ int coil;
 			<source ref="id3"/>
 			<target ref="id2"/>
 			<label kind="synchronisation" x="552" y="34">startCharging?</label>
-			<label kind="assignment" x="467" y="85">coil = 1</label>
 		</transition>
 		<transition id="id9">
 			<source ref="id1"/>
