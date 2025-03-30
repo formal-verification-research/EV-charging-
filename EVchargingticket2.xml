@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>chan carRequest, carApproved, startCharging, endCharging, chargeComplete, informCoil, coilContinue, CoilInformed, outserving, outticket;
+int coil = 0;
+int serving = 0;
+int ticket = 0;
+int coilnum = 6;
+int servingnum = 3;
+clock c1;</declaration>
+	<template>
+		<name>Ticket</name>
+		<location id="id0" x="-416" y="-68">
+			<name x="-442" y="-119">start</name>
+		</location>
+		<location id="id1" x="-136" y="-68">
+			<name x="-136" y="-102">resetserving</name>
+		</location>
+		<location id="id2" x="-272" y="-144">
+			<name x="-314" y="-187">Giveticket</name>
+		</location>
+		<location id="id3" x="-272" y="-340">
+			<name x="-282" y="-374">resetticket</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="id4">
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<nail x="-374" y="-255"/>
+		</transition>
+		<transition id="id5">
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-263" y="-238">ticket &gt;=servingnum</label>
+			<label kind="assignment" x="-263" y="-323">ticket = 0</label>
+		</transition>
+		<transition id="id6">
+			<source ref="id1"/>
+			<target ref="id0"/>
+		</transition>
+		<transition id="id7">
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-247" y="-153">serving&gt;=servingnum</label>
+			<label kind="synchronisation" x="-254" y="-123">outserving?</label>
+			<label kind="assignment" x="-272" y="-93">serving = 0</label>
+		</transition>
+		<transition id="id8">
+			<source ref="id0"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-408" y="-153">serving &gt; 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Car2</name>
+		<declaration>int t2;</declaration>
+		<location id="id9" x="135" y="-255">
+			<name x="125" y="-289">FirstCoil</name>
+		</location>
+		<location id="id10" x="-52" y="-68">
+			<name x="-137" y="-51">Charging</name>
+		</location>
+		<location id="id11" x="-52" y="-255">
+			<name x="-62" y="-289">ToCoil</name>
+			<label kind="invariant" x="-59" y="-221">c1 &lt;= 80</label>
+		</location>
+		<location id="id12" x="-638" y="-255">
+			<name x="-648" y="-285">Waiting</name>
+		</location>
+		<location id="id13" x="-365" y="-255">
+			<name x="-375" y="-285">Requesting</name>
+		</location>
+		<location id="id14" x="-638" y="-68">
+			<name x="-715" y="-34">Completed</name>
+		</location>
+		<location id="id15" x="34" y="-374">
+			<name x="24" y="-408">waitcharging</name>
+		</location>
+		<location id="id16" x="-221" y="-374">
+			<name x="-231" y="-408">checkTicket</name>
+		</location>
+		<init ref="id12"/>
+		<transition id="id17">
+			<source ref="id16"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-203" y="-348">ticket &lt; servingnum</label>
+			<label kind="assignment" x="-203" y="-314">c1 = 0, ticket = ticket + 1, t2 = ticket</label>
+		</transition>
+		<transition id="id18">
+			<source ref="id13"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-347" y="-331">carApproved?</label>
+		</transition>
+		<transition id="id19">
+			<source ref="id15"/>
+			<target ref="id9"/>
+			<label kind="guard" x="51" y="-382">serving == t2</label>
+			<label kind="assignment" x="93" y="-323">coil = 1</label>
+		</transition>
+		<transition id="id20">
+			<source ref="id11"/>
+			<target ref="id15"/>
+			<label kind="guard" x="-34" y="-348">c1 &gt;= 80</label>
+		</transition>
+		<transition id="id21">
+			<source ref="id9"/>
+			<target ref="id10"/>
+			<label kind="guard" x="119" y="-229">coil == 1</label>
+			<label kind="synchronisation" x="59" y="-170">startCharging?</label>
+		</transition>
+		<transition id="id22">
+			<source ref="id10"/>
+			<target ref="id10"/>
+			<label kind="guard" x="41" y="-77">coil&gt;=1</label>
+			<label kind="synchronisation" x="41" y="-51">coilContinue!</label>
+			<nail x="50" y="-94"/>
+			<nail x="-18" y="17"/>
+		</transition>
+		<transition id="id23">
+			<source ref="id10"/>
+			<target ref="id14"/>
+			<label kind="guard" x="-178" y="-110">coil &gt;= coilnum</label>
+			<label kind="synchronisation" x="-409" y="-94">chargeComplete?</label>
+		</transition>
+		<transition id="id24">
+			<source ref="id14"/>
+			<target ref="id12"/>
+			<label kind="assignment" x="-697" y="-238">c1 = 0</label>
+		</transition>
+		<transition id="id25">
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-620" y="-306">c1 &gt;= 20</label>
+			<label kind="synchronisation" x="-545" y="-280">carRequest!</label>
+		</transition>
+	</template>
+	<template>
+		<name>Car1</name>
+		<declaration>int t1;
+</declaration>
+		<location id="id26" x="-42" y="-34">
+			<name x="-52" y="-64">Waiting</name>
+		</location>
+		<location id="id27" x="231" y="-34">
+			<name x="221" y="-64">Requesting</name>
+		</location>
+		<location id="id28" x="544" y="153">
+			<name x="459" y="170">Charging</name>
+		</location>
+		<location id="id29" x="544" y="-34">
+			<name x="534" y="-68">ToCoil</name>
+			<label kind="invariant" x="535" y="0">c1 &lt;= 50</label>
+		</location>
+		<location id="id30" x="-42" y="153">
+			<name x="-119" y="187">Completed</name>
+		</location>
+		<location id="id31" x="731" y="-34">
+			<name x="721" y="-68">FirstCoil</name>
+		</location>
+		<location id="id32" x="646" y="-144">
+			<name x="636" y="-178">WaitCharging</name>
+		</location>
+		<location id="id33" x="391" y="-178">
+			<name x="381" y="-212">checkTicket</name>
+		</location>
+		<init ref="id26"/>
+		<transition id="id34">
+			<source ref="id33"/>
+			<target ref="id29"/>
+			<label kind="guard" x="391" y="-153">ticket &lt; servingnum</label>
+			<label kind="assignment" x="357" y="-102">c1 = 0, ticket = ticket + 1,t1 = ticket</label>
+		</transition>
+		<transition id="id35">
+			<source ref="id27"/>
+			<target ref="id33"/>
+			<label kind="synchronisation" x="249" y="-123">carApproved?</label>
+		</transition>
+		<transition id="id36">
+			<source ref="id32"/>
+			<target ref="id31"/>
+			<label kind="guard" x="671" y="-144">serving == t1</label>
+			<label kind="assignment" x="664" y="-89">coil = 1</label>
+		</transition>
+		<transition id="id37">
+			<source ref="id29"/>
+			<target ref="id32"/>
+			<label kind="guard" x="518" y="-102">c1&gt;=50</label>
+		</transition>
+		<transition id="id38">
+			<source ref="id31"/>
+			<target ref="id28"/>
+			<label kind="guard" x="705" y="-8">coil == 1</label>
+			<label kind="synchronisation" x="646" y="51">startCharging?</label>
+		</transition>
+		<transition id="id39">
+			<source ref="id28"/>
+			<target ref="id28"/>
+			<label kind="guard" x="637" y="144">coil&gt;=1</label>
+			<label kind="synchronisation" x="637" y="170">coilContinue!</label>
+			<nail x="646" y="127"/>
+			<nail x="578" y="238"/>
+		</transition>
+		<transition id="id40">
+			<source ref="id28"/>
+			<target ref="id30"/>
+			<label kind="guard" x="433" y="127">coil &gt;= coilnum</label>
+			<label kind="synchronisation" x="187" y="127">chargeComplete?</label>
+		</transition>
+		<transition id="id41">
+			<source ref="id30"/>
+			<target ref="id26"/>
+			<label kind="assignment" x="-42" y="59">c1 = 0</label>
+		</transition>
+		<transition id="id42">
+			<source ref="id26"/>
+			<target ref="id27"/>
+			<label kind="guard" x="0" y="-102">c1&gt;=0</label>
+			<label kind="synchronisation" x="51" y="-59">carRequest!</label>
+		</transition>
+	</template>
+	<template>
+		<name>Coil</name>
+		<location id="id43" x="-222" y="128">
+			<name x="-299" y="162">Completed</name>
+		</location>
+		<location id="id44" x="-221" y="-59">
+			<name x="-231" y="-89">Waiting</name>
+		</location>
+		<location id="id45" x="365" y="127">
+			<name x="365" y="170">Charged</name>
+		</location>
+		<location id="id46" x="364" y="-59">
+			<name x="354" y="-93">beginCharging</name>
+		</location>
+		<location id="id47" x="51" y="-59">
+			<name x="8" y="-93">readyCharging</name>
+		</location>
+		<location id="id48" x="365" y="25">
+			<name x="391" y="17">Charging</name>
+		</location>
+		<location id="id49" x="-93" y="-170">
+			<name x="-136" y="-212">CoilInfromed</name>
+		</location>
+		<location id="id50" x="-340" y="34">
+		</location>
+		<init ref="id44"/>
+		<transition id="id51">
+			<source ref="id50"/>
+			<target ref="id44"/>
+			<label kind="synchronisation" x="-391" y="-42">outserving!</label>
+		</transition>
+		<transition id="id52">
+			<source ref="id43"/>
+			<target ref="id50"/>
+			<label kind="guard" x="-459" y="93">serving &gt;= servingnum</label>
+		</transition>
+		<transition id="id53">
+			<source ref="id49"/>
+			<target ref="id47"/>
+			<label kind="synchronisation" x="-75" y="-131">CoilInformed!</label>
+			<label kind="assignment" x="-75" y="-114">serving = serving + 1</label>
+		</transition>
+		<transition id="id54">
+			<source ref="id44"/>
+			<target ref="id49"/>
+			<label kind="synchronisation" x="-246" y="-161">informCoil?</label>
+		</transition>
+		<transition id="id55">
+			<source ref="id48"/>
+			<target ref="id45"/>
+		</transition>
+		<transition id="id56">
+			<source ref="id46"/>
+			<target ref="id48"/>
+			<label kind="synchronisation" x="364" y="-34">coilContinue?</label>
+		</transition>
+		<transition id="id57">
+			<source ref="id45"/>
+			<target ref="id43"/>
+			<label kind="guard" x="280" y="136">coil &gt;= coilnum</label>
+			<label kind="synchronisation" x="42" y="102">chargeComplete!</label>
+		</transition>
+		<transition id="id58">
+			<source ref="id45"/>
+			<target ref="id46"/>
+			<label kind="guard" x="416" y="102">coil &lt; coilnum</label>
+			<label kind="assignment" x="552" y="51">coil = coil + 1</label>
+			<nail x="705" y="127"/>
+			<nail x="705" y="-59"/>
+		</transition>
+		<transition id="id59">
+			<source ref="id43"/>
+			<target ref="id44"/>
+			<label kind="guard" x="-204" y="34">serving &lt; servingnum</label>
+		</transition>
+		<transition id="id60">
+			<source ref="id47"/>
+			<target ref="id46"/>
+			<label kind="synchronisation" x="135" y="-85">startCharging!</label>
+		</transition>
+	</template>
+	<template>
+		<name>ControlCenter</name>
+		<location id="id61" x="-392" y="-416">
+			<name x="-402" y="-446">Waiting</name>
+		</location>
+		<location id="id62" x="-119" y="-416">
+			<name x="-129" y="-446">Requesting</name>
+		</location>
+		<location id="id63" x="119" y="-416">
+			<name x="109" y="-450">Approved</name>
+		</location>
+		<location id="id64" x="-110" y="-297">
+			<name x="-161" y="-280">InformToCoil</name>
+		</location>
+		<init ref="id61"/>
+		<transition id="id65">
+			<source ref="id64"/>
+			<target ref="id61"/>
+			<label kind="synchronisation" x="-357" y="-340">CoilInformed?</label>
+		</transition>
+		<transition id="id66">
+			<source ref="id63"/>
+			<target ref="id64"/>
+			<label kind="synchronisation" x="-92" y="-373">informCoil!</label>
+		</transition>
+		<transition id="id67">
+			<source ref="id62"/>
+			<target ref="id63"/>
+			<label kind="synchronisation" x="-34" y="-442">carApproved!</label>
+		</transition>
+		<transition id="id68">
+			<source ref="id61"/>
+			<target ref="id62"/>
+			<label kind="synchronisation" x="-306" y="-450">carRequest?</label>
+		</transition>
+	</template>
+	<system>
+    car1 = Car1();
+    car2 = Car2();
+    coil1 = Coil();
+    ticket1 = Ticket();
+
+    controlCenter = ControlCenter();
+    
+    system car1,car2,coil1,ticket1, controlCenter;
+  </system>
+	<queries>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2025-03-29 20:30:45 -0600">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; deadlock</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2025-03-29 12:52:13 -0600">
+			</result>
+		</query>
+	</queries>
+</nta>
