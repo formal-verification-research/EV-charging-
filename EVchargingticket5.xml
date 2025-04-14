@@ -6,12 +6,13 @@ int coil = 0;
 int serving = 0;
 int ticket = 0;
 int coilnum = 6;
-int servingnum = 3;
+int servingnum = 5;
 const int N = 5; //Number of Car
 typedef int[0,N-1] id_t;
 int id[N];
 
-clock c1;</declaration>
+clock c1;
+clock cc;</declaration>
 	<template>
 		<name>Ticket</name>
 		<location id="id0" x="-416" y="-68">
@@ -240,22 +241,28 @@ clock c1;</declaration>
 		<transition id="id48">
 			<source ref="id47"/>
 			<target ref="id44"/>
+			<label kind="guard" x="-195" y="-306">cc &gt;= 1</label>
 			<label kind="synchronisation" x="-357" y="-340">CoilInformed?</label>
 		</transition>
 		<transition id="id49">
 			<source ref="id46"/>
 			<target ref="id47"/>
+			<label kind="guard" x="-76" y="-408">cc &gt;= 1</label>
 			<label kind="synchronisation" x="-92" y="-373">informCoil!</label>
+			<label kind="assignment" x="-76" y="-306">cc = 0</label>
 		</transition>
 		<transition id="id50">
 			<source ref="id45"/>
 			<target ref="id46"/>
+			<label kind="guard" x="85" y="-391">cc &gt;= 1</label>
 			<label kind="synchronisation" x="-34" y="-442">carApproved!</label>
+			<label kind="assignment" x="59" y="-476">cc = 0</label>
 		</transition>
 		<transition id="id51">
 			<source ref="id44"/>
 			<target ref="id45"/>
 			<label kind="synchronisation" x="-306" y="-450">carRequest?</label>
+			<label kind="assignment" x="-204" y="-408">cc = 0</label>
 		</transition>
 	</template>
 	<system>
@@ -272,7 +279,9 @@ clock c1;</declaration>
 		<query>
 			<formula>A[] not deadlock</formula>
 			<comment/>
-			<result outcome="success" type="quality" timestamp="2025-04-02 18:50:34 -0600">
+			<option key="--diagnostic" value="1"/>
+			<result outcome="success" type="quality" timestamp="2025-04-14 12:18:42 -0600">
+				<option key="--diagnostic" value="1"/>
 			</result>
 		</query>
 		<query>
@@ -285,8 +294,6 @@ clock c1;</declaration>
 			<formula>A[] not (Car(0).Charging and Car(1).Charging and Car(2).Charging and Car(3).Charging and Car(4).Charging)
 </formula>
 			<comment/>
-			<result outcome="success" type="quality" timestamp="2025-04-02 18:53:30 -0600">
-			</result>
 		</query>
 		<query>
 			<formula>E&lt;&gt; not (Car(0).Charging and Car(1).Charging)
@@ -300,6 +307,13 @@ clock c1;</declaration>
 			<formula>coil1.readyCharging --&gt; car1.FirstCoil</formula>
 			<comment/>
 			<result outcome="failure" type="quality" timestamp="2025-04-01 20:02:50 -0600">
+			</result>
+		</query>
+		<query>
+			<formula>A[] forall (i:int[0,5-1]) forall (j:int[0,5-1]) i != j imply not (Car(i).Charging &amp;&amp; Car(j).Charging)
+</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2025-04-14 12:10:54 -0600">
 			</result>
 		</query>
 	</queries>
