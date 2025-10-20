@@ -14,7 +14,7 @@ int coil;
 		</location>
 		<location id="id2" x="544" y="153">
 			<name x="459" y="170">Charging</name>
-			<label kind="invariant" x="561" y="102">coil &lt;= 6</label>
+			<label kind="invariant" x="535" y="102">coil &lt;= 6</label>
 		</location>
 		<location id="id3" x="544" y="-34">
 			<name x="534" y="-68">ToCoil</name>
@@ -26,7 +26,7 @@ int coil;
 		<transition id="id5">
 			<source ref="id2"/>
 			<target ref="id2"/>
-			<label kind="guard" x="654" y="93">coil&gt;=1</label>
+			<label kind="guard" x="637" y="144">coil&gt;=1</label>
 			<label kind="synchronisation" x="637" y="170">coilContinue!</label>
 			<nail x="646" y="127"/>
 			<nail x="578" y="238"/>
