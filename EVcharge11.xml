@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+chan AutReq, KeyRSU, KeyPT, AutAck, CharReq,CharAck, CharEnd, BillPT, BillRSU, EveBroadcast, EveAutReq, EveCSAutreq, EveAutRes, EVAutRes, CSbroadcast, EVbroadcast, EVEgotError, CSFindError, GetEVerror;
+
+const int N = 1; 
+typedef int[0,N-1] id_t;
+int id[N];
+int geterror = 0;
+double r;
+clock cEVE,cEV;</declaration>
+	<template>
+		<name x="5" y="5">EV</name>
+		<parameter>const id_t pid</parameter>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id0" x="0" y="-25">
+			<name x="-10" y="-59">EV</name>
+		</location>
+		<location id="id1" x="229" y="-25">
+			<name x="246" y="-34">CS</name>
+		</location>
+		<location id="id2" x="229" y="127">
+			<name x="246" y="119">autAck</name>
+		</location>
+		<location id="id3" x="0" y="127">
+			<name x="-10" y="93">PT</name>
+		</location>
+		<location id="id4" x="-153" y="127">
+			<name x="-229" y="110">charAck</name>
+		</location>
+		<location id="id5" x="-153" y="-25">
+			<name x="-178" y="-59">charEnd</name>
+		</location>
+		<location id="id6" x="85" y="-221">
+			<name x="75" y="-255">PowerEnough</name>
+		</location>
+		<location id="id7" x="-76" y="-221">
+			<name x="-119" y="-255">PowerNeed</name>
+		</location>
+		<location id="id8" x="0" y="-144">
+			<name x="-10" y="-178">EVE</name>
+		</location>
+		<location id="id9" x="-178" y="-306">
+			<name x="-188" y="-340">EAVES</name>
+		</location>
+		<location id="id10" x="119" y="-93">
+			<name x="85" y="-127">CSbroad</name>
+		</location>
+		<location id="id11" x="-127" y="-170">
+			<name x="-195" y="-187">EVAres</name>
+		</location>
+		<location id="id12" x="229" y="-127">
+			<name x="246" y="-153">EVbroad</name>
+		</location>
+		<location id="id13" x="-391" y="-306">
+			<name x="-450" y="-306">NoRes</name>
+		</location>
+		<location id="id14" x="170" y="42">
+			<name x="110" y="51">findevError</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="id15">
+			<source ref="id14"/>
+			<target ref="id0"/>
+		</transition>
+		<transition id="id16">
+			<source ref="id1"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="204" y="0">GetEVerror?</label>
+		</transition>
+		<transition id="id17">
+			<source ref="id13"/>
+			<target ref="id0"/>
+		</transition>
+		<transition id="id18">
+			<source ref="id9"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-323" y="-331">EVEgotError?</label>
+		</transition>
+		<transition id="id19">
+			<source ref="id12"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="229" y="-93">EVbroadcast!</label>
+			<label kind="assignment" x="229" y="-76">id[pid] = pid</label>
+		</transition>
+		<transition id="id20">
+			<source ref="id10"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="127" y="-170">AutReq!</label>
+		</transition>
+		<transition id="id21">
+			<source ref="id11"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-136" y="-93">CharReq!</label>
+		</transition>
+		<transition id="id22">
+			<source ref="id9"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-195" y="-229">EVAutRes?</label>
+		</transition>
+		<transition id="id23">
+			<source ref="id10"/>
+			<target ref="id6"/>
+		</transition>
+		<transition id="id24">
+			<source ref="id0"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="18" y="-76">CSbroadcast?</label>
+		</transition>
+		<transition id="id25">
+			<source ref="id7"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="-127" y="-297">EveAutReq!</label>
+		</transition>
+		<transition id="id26">
+			<source ref="id6"/>
+			<target ref="id0"/>
+		</transition>
+		<transition id="id27">
+			<source ref="id8"/>
+			<target ref="id6"/>
+		</transition>
+		<transition id="id28">
+			<source ref="id8"/>
+			<target ref="id7"/>
+		</transition>
+		<transition id="id29">
+			<source ref="id0"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-51" y="-119">EveBroadcast?</label>
+		</transition>
+		<transition id="id30">
+			<source ref="id5"/>
+			<target ref="id0"/>
+		</transition>
+		<transition id="id31">
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="-153" y="34">CharEnd!</label>
+		</transition>
+		<transition id="id32">
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-110" y="102">CharAck?</label>
+		</transition>
+		<transition id="id33">
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="85" y="110">CharReq!</label>
+		</transition>
+		<transition id="id34">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="229" y="76">AutAck?</label>
+		</transition>
+	</template>
+	<template>
+		<name>CS</name>
+		<location id="id35" x="255" y="34">
+			<name x="245" y="0">CS</name>
+		</location>
+		<location id="id36" x="493" y="-42">
+			<name x="468" y="-76">autReq</name>
+		</location>
+		<location id="id37" x="255" y="187">
+			<name x="246" y="204">RSU</name>
+		</location>
+		<location id="id38" x="484" y="187">
+			<name x="501" y="178">EV</name>
+		</location>
+		<location id="id39" x="102" y="187">
+			<name x="94" y="204">Bill</name>
+		</location>
+		<location id="id40" x="255" y="-119">
+			<name x="245" y="-153">EVE</name>
+		</location>
+		<location id="id41" x="204" y="-178">
+			<name x="221" y="-204">Error</name>
+		</location>
+		<location id="id42" x="59" y="-289">
+			<name x="49" y="-323">EAVES</name>
+		</location>
+		<location id="id43" x="391" y="-42">
+			<name x="357" y="-85">CS_broad</name>
+		</location>
+		<location id="id44" x="204" y="-289">
+			<name x="194" y="-323">SendKey</name>
+		</location>
+		<location id="id45" x="493" y="59">
+			<name x="527" y="51">GotEVbroad</name>
+		</location>
+		<location id="id46" x="161" y="-110">
+			<name x="85" y="-144">FindError</name>
+		</location>
+		<location id="id47" x="620" y="-42">
+			<name x="610" y="-76">EV_Error</name>
+		</location>
+		<location id="id48" x="450" y="17">
+			<name x="416" y="-25">FindEV_Error</name>
+		</location>
+		<init ref="id35"/>
+		<transition id="id49">
+			<source ref="id48"/>
+			<target ref="id35"/>
+			<nail x="399" y="34"/>
+		</transition>
+		<transition id="id50">
+			<source ref="id47"/>
+			<target ref="id48"/>
+			<label kind="synchronisation" x="501" y="-34">GetEVerror!</label>
+		</transition>
+		<transition id="id51">
+			<source ref="id47"/>
+			<target ref="id45"/>
+		</transition>
+		<transition id="id52">
+			<source ref="id36"/>
+			<target ref="id47"/>
+			<label kind="synchronisation" x="510" y="-93">EVbroadcast?</label>
+		</transition>
+		<transition id="id53">
+			<source ref="id46"/>
+			<target ref="id35"/>
+		</transition>
+		<transition id="id54">
+			<source ref="id41"/>
+			<target ref="id46"/>
+			<label kind="synchronisation" x="93" y="-161">CSFindError!</label>
+		</transition>
+		<transition id="id55">
+			<source ref="id45"/>
+			<target ref="id38"/>
+			<label kind="synchronisation" x="501" y="89">AutAck!</label>
+		</transition>
+		<transition id="id56">
+			<source ref="id42"/>
+			<target ref="id37"/>
+			<nail x="59" y="263"/>
+			<nail x="255" y="263"/>
+		</transition>
+		<transition id="id57">
+			<source ref="id44"/>
+			<target ref="id42"/>
+			<label kind="synchronisation" x="102" y="-314">EveAutRes!</label>
+		</transition>
+		<transition id="id58">
+			<source ref="id41"/>
+			<target ref="id44"/>
+			<label kind="synchronisation" x="204" y="-255">KeyRSU!</label>
+		</transition>
+		<transition id="id59">
+			<source ref="id43"/>
+			<target ref="id35"/>
+			<nail x="348" y="34"/>
+		</transition>
+		<transition id="id60">
+			<source ref="id43"/>
+			<target ref="id36"/>
+			<label kind="synchronisation" x="416" y="-59">AutReq?</label>
+		</transition>
+		<transition id="id61">
+			<source ref="id35"/>
+			<target ref="id43"/>
+			<label kind="synchronisation" x="272" y="-25">CSbroadcast!</label>
+		</transition>
+		<transition id="id62">
+			<source ref="id40"/>
+			<target ref="id41"/>
+		</transition>
+		<transition id="id63">
+			<source ref="id35"/>
+			<target ref="id40"/>
+			<label kind="synchronisation" x="221" y="-59">EveCSAutreq?</label>
+		</transition>
+		<transition id="id64">
+			<source ref="id39"/>
+			<target ref="id35"/>
+			<nail x="102" y="34"/>
+		</transition>
+		<transition id="id65">
+			<source ref="id37"/>
+			<target ref="id39"/>
+			<label kind="synchronisation" x="145" y="170">BillRSU?</label>
+		</transition>
+		<transition id="id66">
+			<source ref="id38"/>
+			<target ref="id37"/>
+			<label kind="synchronisation" x="332" y="170">KeyRSU!</label>
+		</transition>
+	</template>
+	<template>
+		<name>RSU</name>
+		<location id="id67" x="-144" y="-85">
+			<name x="-154" y="-119">RSU</name>
+		</location>
+		<location id="id68" x="85" y="-85">
+			<name x="59" y="-119">keyRSU</name>
+		</location>
+		<location id="id69" x="85" y="85">
+			<name x="110" y="76">PT</name>
+		</location>
+		<location id="id70" x="-144" y="85">
+			<name x="-154" y="51">Bill</name>
+		</location>
+		<location id="id71" x="-297" y="85">
+			<name x="-307" y="51">CS</name>
+		</location>
+		<init ref="id67"/>
+		<transition id="id72">
+			<source ref="id71"/>
+			<target ref="id67"/>
+			<nail x="-297" y="-85"/>
+		</transition>
+		<transition id="id73">
+			<source ref="id70"/>
+			<target ref="id71"/>
+			<label kind="synchronisation" x="-255" y="59">BillRSU!</label>
+		</transition>
+		<transition id="id74">
+			<source ref="id69"/>
+			<target ref="id70"/>
+			<label kind="synchronisation" x="-59" y="59">BillPT?</label>
+		</transition>
+		<transition id="id75">
+			<source ref="id68"/>
+			<target ref="id69"/>
+			<label kind="synchronisation" x="85" y="-17">KeyPT!</label>
+		</transition>
+		<transition id="id76">
+			<source ref="id67"/>
+			<target ref="id68"/>
+			<label kind="synchronisation" x="-68" y="-102">KeyRSU?</label>
+		</transition>
+	</template>
+	<template>
+		<name>PT</name>
+		<location id="id77" x="-136" y="-110">
+			<name x="-146" y="-144">PT</name>
+		</location>
+		<location id="id78" x="85" y="-110">
+			<name x="68" y="-144">keyPT</name>
+		</location>
+		<location id="id79" x="85" y="25">
+			<name x="102" y="17">charReq</name>
+		</location>
+		<location id="id80" x="-136" y="25">
+			<name x="-146" y="-9">EV</name>
+		</location>
+		<location id="id81" x="-297" y="-110">
+			<name x="-307" y="-144">RSU</name>
+		</location>
+		<location id="id82" x="-297" y="25">
+		</location>
+		<init ref="id77"/>
+		<transition id="id83">
+			<source ref="id82"/>
+			<target ref="id81"/>
+			<label kind="synchronisation" x="-297" y="-59">BillPT!</label>
+		</transition>
+		<transition id="id84">
+			<source ref="id80"/>
+			<target ref="id82"/>
+			<label kind="synchronisation" x="-238" y="8">CharEnd?</label>
+		</transition>
+		<transition id="id85">
+			<source ref="id81"/>
+			<target ref="id77"/>
+			<nail x="-280" y="-110"/>
+		</transition>
+		<transition id="id86">
+			<source ref="id79"/>
+			<target ref="id80"/>
+			<label kind="synchronisation" x="-59" y="0">CharAck!</label>
+		</transition>
+		<transition id="id87">
+			<source ref="id78"/>
+			<target ref="id79"/>
+			<label kind="synchronisation" x="89" y="-63">CharReq?</label>
+		</transition>
+		<transition id="id88">
+			<source ref="id77"/>
+			<target ref="id78"/>
+			<label kind="synchronisation" x="-59" y="-136">KeyPT?</label>
+		</transition>
+	</template>
+	<template>
+		<name>EAVES</name>
+		<declaration>double choose() {
+  return random(100); // ✅ allowed
+}
+int r;</declaration>
+		<location id="id89" x="-442" y="-204">
+			<name x="-452" y="-238">Eve</name>
+		</location>
+		<location id="id90" x="-42" y="-204">
+			<name x="-76" y="-238">GotEV</name>
+		</location>
+		<location id="id91" x="-42" y="-76">
+			<name x="-51" y="-59">CS</name>
+		</location>
+		<location id="id92" x="-238" y="-76">
+		</location>
+		<location id="id93" x="-442" y="-76">
+			<name x="-452" y="-110">EV</name>
+		</location>
+		<location id="id94" x="-42" y="17">
+			<name x="-76" y="42">CSgotError</name>
+		</location>
+		<init ref="id89"/>
+		<transition id="id95">
+			<source ref="id94"/>
+			<target ref="id89"/>
+			<label kind="synchronisation" x="-517" y="0">EVEgotError!</label>
+			<nail x="-535" y="17"/>
+			<nail x="-535" y="-212"/>
+			<nail x="-535" y="-212"/>
+		</transition>
+		<transition id="id96">
+			<source ref="id91"/>
+			<target ref="id94"/>
+			<label kind="synchronisation" x="-42" y="-46">CSFindError?</label>
+		</transition>
+		<transition id="id97">
+			<source ref="id89"/>
+			<target ref="id90"/>
+			<label kind="synchronisation" x="-382" y="-238">EveAutReq?</label>
+		</transition>
+		<transition id="id98">
+			<source ref="id89"/>
+			<target ref="id89"/>
+			<label kind="synchronisation" x="-527" y="-306">EveBroadcast!</label>
+			<nail x="-425" y="-280"/>
+			<nail x="-518" y="-246"/>
+		</transition>
+		<transition id="id99">
+			<source ref="id93"/>
+			<target ref="id89"/>
+		</transition>
+		<transition id="id100">
+			<source ref="id92"/>
+			<target ref="id93"/>
+			<label kind="synchronisation" x="-365" y="-102">EVAutRes!</label>
+		</transition>
+		<transition id="id101">
+			<source ref="id91"/>
+			<target ref="id92"/>
+			<label kind="synchronisation" x="-178" y="-102">EveAutRes?</label>
+		</transition>
+		<transition id="id102">
+			<source ref="id90"/>
+			<target ref="id91"/>
+			<label kind="synchronisation" x="-42" y="-157">EveCSAutreq!</label>
+			<label kind="assignment" x="-42" y="-140">cEVE = 0</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+//EV_process = EV();
+CS_process = CS();
+RSU_process = RSU();
+PT_process = PT();
+
+eavesp = EAVES();
+// List one or more processes to be composed into a system.
+system EV,CS_process,RSU_process,PT_process,eavesp;
+//system eavesp;
+</system>
+	<queries>
+		<query>
+			<formula/>
+			<comment/>
+		</query>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment/>
+			<option key="--diagnostic" value="1"/>
+			<result outcome="success" type="quality" timestamp="2025-10-28 10:09:39 -0600">
+				<option key="--diagnostic" value="1"/>
+			</result>
+		</query>
+	</queries>
+</nta>
