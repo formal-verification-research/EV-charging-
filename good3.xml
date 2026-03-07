@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+broadcast chan CSbroad, EveBroad;
+chan AutAck, AutReq, KeyRSU, KeyPT, BillPT, BillRSU, CharAck, CharReq, CharEnd, MasgError, NoMasgError, EVGotError, EVgotNoError, ServTickMatch, outserv, EvetoEVAutRes, CSgotEve, EveAutRes, EveAutReq, EvetoCSReq, CSfindEVE;
+const int N = 2;
+const int servnum = 3;
+typedef int[0,N-1] id_t;
+int E_e;
+int Energy[N], id[N];
+int Max_ticket = servnum, Max_serv = servnum;
+int ticket = 0, serv = 0;
+clock t, ec, rc, pc;</declaration>
+	<template>
+		<name x="5" y="5">CSBroCast</name>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id0" x="0" y="0">
+			<name x="-42" y="17">CSbroadcast</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="id1">
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-34" y="-68">CSbroad!</label>
+			<nail x="-85" y="-42"/>
+			<nail x="76" y="-42"/>
+		</transition>
+	</template>
+	<template>
+		<name>msagError</name>
+		<location id="id2" x="0" y="0">
+			<name x="25" y="-8">MassageError</name>
+		</location>
+		<init ref="id2"/>
+		<transition id="id3">
+			<source ref="id2"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-42" y="102">NoMasgError!</label>
+			<nail x="76" y="93"/>
+			<nail x="-76" y="93"/>
+		</transition>
+		<transition id="id4">
+			<source ref="id2"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-42" y="-110">MasgError!</label>
+			<nail x="-76" y="-85"/>
+			<nail x="85" y="-85"/>
+		</transition>
+	</template>
+	<template>
+		<name>TicketSYS</name>
+		<location id="id5" x="-59" y="-76">
+			<name x="-34" y="-85">Giveticket</name>
+		</location>
+		<location id="id6" x="76" y="34">
+			<name x="42" y="51">reset_serv</name>
+		</location>
+		<location id="id7" x="-59" y="-229">
+			<name x="-102" y="-263">reset_ticekt</name>
+		</location>
+		<location id="id8" x="-187" y="34">
+			<name x="-197" y="0">strat</name>
+		</location>
+		<init ref="id8"/>
+		<transition id="id9">
+			<source ref="id8"/>
+			<target ref="id5"/>
+		</transition>
+		<transition id="id10">
+			<source ref="id6"/>
+			<target ref="id8"/>
+		</transition>
+		<transition id="id11">
+			<source ref="id7"/>
+			<target ref="id5"/>
+			<nail x="-178" y="-153"/>
+		</transition>
+		<transition id="id12">
+			<source ref="id5"/>
+			<target ref="id6"/>
+			<label kind="guard" x="0" y="-51">serv &gt;= Max_serv</label>
+			<label kind="synchronisation" x="-41" y="-38">outserv?</label>
+			<label kind="assignment" x="51" y="-25">serv = 0</label>
+		</transition>
+		<transition id="id13">
+			<source ref="id5"/>
+			<target ref="id7"/>
+			<label kind="guard" x="-59" y="-199">ticket &gt;= Max_ticket</label>
+			<label kind="assignment" x="-59" y="-165">ticket = 0</label>
+			<nail x="-59" y="-102"/>
+		</transition>
+	</template>
+	<template>
+		<name>CS</name>
+		<location id="id14" x="-221" y="-110">
+			<name x="-231" y="-144">CS</name>
+		</location>
+		<location id="id15" x="-34" y="-110">
+			<name x="-68" y="-144">GotAutReq</name>
+			<label kind="invariant" x="-44" y="-93">t &lt;= 50</label>
+		</location>
+		<location id="id16" x="153" y="-110">
+			<name x="110" y="-144">CheckError</name>
+			<label kind="invariant" x="187" y="-119">t &lt;= 50</label>
+		</location>
+		<location id="id17" x="153" y="17">
+			<name x="170" y="8">NoError</name>
+			<label kind="invariant" x="221" y="-8">t &lt;= 20</label>
+		</location>
+		<location id="id18" x="153" y="-246">
+			<name x="170" y="-255">Error</name>
+			<label kind="invariant" x="143" y="-229">t &lt;= 20</label>
+		</location>
+		<location id="id19" x="-34" y="-246">
+			<name x="51" y="-289">senderror</name>
+			<label kind="invariant" x="-44" y="-229">t &lt;= 50</label>
+		</location>
+		<location id="id20" x="153" y="93">
+			<name x="178" y="84">Processing</name>
+			<label kind="invariant" x="143" y="110">t &lt;= 20</label>
+		</location>
+		<location id="id21" x="153" y="238">
+			<name x="187" y="229">sendAutack</name>
+			<label kind="invariant" x="143" y="255">t &lt;= 20</label>
+		</location>
+		<location id="id22" x="8" y="238">
+			<name x="-25" y="170">sendRSU</name>
+			<label kind="invariant" x="-2" y="255">t &lt;= 20</label>
+		</location>
+		<location id="id23" x="-102" y="238">
+			<name x="-119" y="204">RSU</name>
+		</location>
+		<location id="id24" x="-221" y="238">
+			<name x="-231" y="204">Bill</name>
+		</location>
+		<location id="id25" x="-425" y="-110">
+			<name x="-518" y="-119">GotEveReq</name>
+			<label kind="invariant" x="-435" y="-93">t &lt;= 500</label>
+		</location>
+		<location id="id26" x="-425" y="8">
+			<name x="-450" y="25">FindEve</name>
+		</location>
+		<location id="id27" x="-425" y="-238">
+			<name x="-435" y="-272">SendKey</name>
+			<label kind="invariant" x="-399" y="-255">t &lt;= 20</label>
+		</location>
+		<location id="id28" x="-569" y="-238">
+			<name x="-680" y="-246">CStoEveRes</name>
+		</location>
+		<init ref="id14"/>
+		<transition id="id29">
+			<source ref="id14"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-153" y="-51">CSbroad!</label>
+			<nail x="-119" y="-76"/>
+			<nail x="-170" y="-42"/>
+		</transition>
+		<transition id="id30">
+			<source ref="id28"/>
+			<target ref="id23"/>
+			<label kind="assignment" x="-551" y="289">t = 0</label>
+			<nail x="-569" y="289"/>
+			<nail x="-102" y="289"/>
+		</transition>
+		<transition id="id31">
+			<source ref="id27"/>
+			<target ref="id28"/>
+			<label kind="synchronisation" x="-535" y="-263">EveAutRes!</label>
+			<label kind="assignment" x="-551" y="-238">t = 0</label>
+		</transition>
+		<transition id="id32">
+			<source ref="id25"/>
+			<target ref="id27"/>
+			<label kind="guard" x="-425" y="-208">t &gt;= 5</label>
+			<label kind="synchronisation" x="-425" y="-191">KeyRSU!</label>
+			<label kind="assignment" x="-425" y="-174">t = 0</label>
+		</transition>
+		<transition id="id33">
+			<source ref="id26"/>
+			<target ref="id14"/>
+		</transition>
+		<transition id="id34">
+			<source ref="id25"/>
+			<target ref="id26"/>
+			<label kind="synchronisation" x="-425" y="-68">CSfindEVE!</label>
+			<label kind="assignment" x="-425" y="-51">t = 0</label>
+		</transition>
+		<transition id="id35">
+			<source ref="id14"/>
+			<target ref="id25"/>
+			<label kind="synchronisation" x="-365" y="-136">EvetoCSReq?</label>
+			<label kind="assignment" x="-357" y="-110">t = 0</label>
+		</transition>
+		<transition id="id36">
+			<source ref="id20"/>
+			<target ref="id21"/>
+			<label kind="synchronisation" x="153" y="148">ServTickMatch?</label>
+			<label kind="assignment" x="153" y="165">t = 0</label>
+		</transition>
+		<transition id="id37">
+			<source ref="id24"/>
+			<target ref="id14"/>
+		</transition>
+		<transition id="id38">
+			<source ref="id23"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="-195" y="221">BillRSU?</label>
+		</transition>
+		<transition id="id39">
+			<source ref="id22"/>
+			<target ref="id23"/>
+			<label kind="guard" x="-59" y="204">t &gt;= 5</label>
+			<label kind="synchronisation" x="-76" y="221">KeyRSU!</label>
+			<label kind="assignment" x="-84" y="238">t = 0</label>
+		</transition>
+		<transition id="id40">
+			<source ref="id21"/>
+			<target ref="id22"/>
+			<label kind="guard" x="0" y="195">serv &lt;= Max_serv &amp;&amp; t &gt;= 5</label>
+			<label kind="synchronisation" x="51" y="221">AutAck!</label>
+			<label kind="assignment" x="26" y="238">t = 0</label>
+		</transition>
+		<transition id="id41">
+			<source ref="id17"/>
+			<target ref="id20"/>
+			<label kind="guard" x="229" y="17">t &gt;= 5</label>
+			<label kind="synchronisation" x="153" y="34">EVgotNoError!</label>
+			<label kind="assignment" x="170" y="51">serv = serv + 1, 
+t = 0</label>
+		</transition>
+		<transition id="id42">
+			<source ref="id19"/>
+			<target ref="id14"/>
+			<label kind="guard" x="-203" y="-280">t&gt;=1</label>
+			<nail x="-221" y="-246"/>
+		</transition>
+		<transition id="id43">
+			<source ref="id18"/>
+			<target ref="id19"/>
+			<label kind="guard" x="-16" y="-280">t &gt;= 5</label>
+			<label kind="synchronisation" x="8" y="-263">EVGotError!</label>
+			<label kind="assignment" x="59" y="-238">t = 0</label>
+		</transition>
+		<transition id="id44">
+			<source ref="id16"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="153" y="-63">NoMasgError?</label>
+			<label kind="assignment" x="153" y="-46">t = 0</label>
+		</transition>
+		<transition id="id45">
+			<source ref="id16"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="153" y="-195">MasgError?</label>
+			<label kind="assignment" x="153" y="-178">t = 0</label>
+		</transition>
+		<transition id="id46">
+			<source ref="id15"/>
+			<target ref="id16"/>
+			<label kind="guard" x="25" y="-136">t &gt;= 1</label>
+		</transition>
+		<transition id="id47">
+			<source ref="id14"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-161" y="-127">AutReq?</label>
+			<label kind="assignment" x="-110" y="-110">t = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>EV</name>
+		<parameter>const id_t car</parameter>
+		<declaration>clock c;</declaration>
+		<location id="id48" x="-561" y="-17">
+			<name x="-571" y="-51">EV</name>
+		</location>
+		<location id="id49" x="-306" y="-17">
+			<name x="-340" y="-51">CheckBatt</name>
+			<label kind="invariant" x="-316" y="0">c&lt;=500</label>
+		</location>
+		<location id="id50" x="-102" y="-17">
+			<name x="-153" y="-51">GotCSbroad</name>
+			<label kind="invariant" x="-112" y="0">c &lt;= 50</label>
+		</location>
+		<location id="id51" x="93" y="-17">
+			<name x="68" y="-51">EVreq</name>
+			<label kind="invariant" x="136" y="-34">c &lt;= 500</label>
+		</location>
+		<location id="id52" x="93" y="-272">
+			<name x="110" y="-289">EVFindError</name>
+			<label kind="invariant" x="83" y="-255">c &lt;= 20</label>
+		</location>
+		<location id="id53" x="93" y="212">
+			<name x="110" y="195">compare</name>
+			<label kind="invariant" x="110" y="212">c &lt;= 20</label>
+		</location>
+		<location id="id54" x="-340" y="212">
+			<name x="-365" y="229">AutAcked</name>
+			<label kind="invariant" x="-365" y="255">c &lt;= 50</label>
+		</location>
+		<location id="id55" x="-110" y="212">
+			<name x="-136" y="246">Processing</name>
+			<label kind="invariant" x="-120" y="229">c &lt;= 50</label>
+		</location>
+		<location id="id56" x="-552" y="212">
+			<name x="-562" y="178">PT</name>
+			<label kind="invariant" x="-562" y="229">c &lt;= 1000</label>
+		</location>
+		<location id="id57" x="-731" y="-17">
+			<name x="-741" y="-51">charEnd</name>
+		</location>
+		<location id="id58" x="-731" y="212">
+			<name x="-773" y="229">Charging</name>
+			<label kind="invariant" x="-714" y="212">c &lt;= 60020</label>
+		</location>
+		<location id="id59" x="-221" y="93">
+			<name x="-231" y="59">Outserv</name>
+			<label kind="invariant" x="-231" y="110">c &lt;= 20</label>
+		</location>
+		<location id="id60" x="-306" y="-357">
+			<name x="-316" y="-391">GotEveBroad</name>
+			<label kind="invariant" x="-316" y="-340">c &lt;= 50</label>
+		</location>
+		<location id="id61" x="-561" y="-357">
+			<name x="-571" y="-391">Eve</name>
+			<label kind="invariant" x="-571" y="-340">c &lt;= 2000</label>
+		</location>
+		<location id="id62" x="-883" y="-357">
+			<name x="-893" y="-391">sendreq</name>
+			<label kind="invariant" x="-986" y="-382">c&lt;=180000</label>
+		</location>
+		<init ref="id48"/>
+		<transition id="id63">
+			<source ref="id61"/>
+			<target ref="id48"/>
+			<label kind="guard" x="-561" y="-221">c &gt;= 20</label>
+			<label kind="synchronisation" x="-561" y="-204">CSgotEve?</label>
+		</transition>
+		<transition id="id64">
+			<source ref="id62"/>
+			<target ref="id56"/>
+			<label kind="guard" x="-901" y="-297">c &gt;= 5</label>
+			<label kind="synchronisation" x="-884" y="-153">CharReq!</label>
+			<label kind="assignment" x="-866" y="255">c = 0</label>
+			<nail x="-884" y="255"/>
+			<nail x="-552" y="255"/>
+		</transition>
+		<transition id="id65">
+			<source ref="id61"/>
+			<target ref="id62"/>
+			<label kind="guard" x="-874" y="-391">c &gt;= 20</label>
+			<label kind="synchronisation" x="-807" y="-374">EvetoEVAutRes?</label>
+			<label kind="assignment" x="-874" y="-357">c = 0</label>
+		</transition>
+		<transition id="id66">
+			<source ref="id60"/>
+			<target ref="id61"/>
+			<label kind="guard" x="-374" y="-399">c &gt;= 1</label>
+			<label kind="synchronisation" x="-459" y="-382">EveAutReq!</label>
+			<label kind="assignment" x="-408" y="-340">c = 0</label>
+		</transition>
+		<transition id="id67">
+			<source ref="id49"/>
+			<target ref="id60"/>
+			<label kind="guard" x="-306" y="-212">Energy[car] &gt; 30</label>
+			<label kind="synchronisation" x="-306" y="-229">EveBroad?</label>
+			<label kind="assignment" x="-306" y="-187">c = 0</label>
+		</transition>
+		<transition id="id68">
+			<source ref="id55"/>
+			<target ref="id59"/>
+			<label kind="guard" x="-203" y="118">serv&gt;= Max_serv &amp;&amp; c &gt;= 5</label>
+			<label kind="synchronisation" x="-203" y="135">outserv!</label>
+			<label kind="assignment" x="-203" y="152">c = 0</label>
+		</transition>
+		<transition id="id69">
+			<source ref="id59"/>
+			<target ref="id54"/>
+			<label kind="synchronisation" x="-322" y="135">AutAck?</label>
+		</transition>
+		<transition id="id70">
+			<source ref="id58"/>
+			<target ref="id57"/>
+			<label kind="guard" x="-731" y="153">c &gt;= 5</label>
+			<label kind="synchronisation" x="-731" y="80">CharEnd!</label>
+			<label kind="assignment" x="-731" y="97">Energy[car] = 0</label>
+		</transition>
+		<transition id="id71">
+			<source ref="id57"/>
+			<target ref="id48"/>
+			<label kind="assignment" x="-713" y="-17">id[car] = 0</label>
+		</transition>
+		<transition id="id72">
+			<source ref="id56"/>
+			<target ref="id58"/>
+			<label kind="guard" x="-620" y="178">c &gt;= 5</label>
+			<label kind="synchronisation" x="-680" y="187">CharAck?</label>
+			<label kind="assignment" x="-688" y="229">c = 0</label>
+		</transition>
+		<transition id="id73">
+			<source ref="id54"/>
+			<target ref="id56"/>
+			<label kind="guard" x="-399" y="187">c &gt;= 5</label>
+			<label kind="synchronisation" x="-484" y="187">CharReq!</label>
+			<label kind="assignment" x="-534" y="212">c = 0</label>
+		</transition>
+		<transition id="id74">
+			<source ref="id55"/>
+			<target ref="id54"/>
+			<label kind="guard" x="-272" y="212">serv &lt; Max_serv</label>
+			<label kind="synchronisation" x="-255" y="195">AutAck?</label>
+		</transition>
+		<transition id="id75">
+			<source ref="id53"/>
+			<target ref="id55"/>
+			<label kind="guard" x="33" y="229">serv == id[car]</label>
+			<label kind="synchronisation" x="-68" y="178">ServTickMatch!</label>
+			<label kind="assignment" x="-75" y="212">c = 0</label>
+			<nail x="84" y="212"/>
+			<nail x="-93" y="212"/>
+		</transition>
+		<transition id="id76">
+			<source ref="id51"/>
+			<target ref="id53"/>
+			<label kind="guard" x="93" y="63">ticket&lt; Max_ticket &amp;&amp; c&gt;=1</label>
+			<label kind="synchronisation" x="97" y="80">EVgotNoError?</label>
+			<label kind="assignment" x="93" y="97">ticket = ticket + 1,
+id[car] = ticket,
+c = 0</label>
+		</transition>
+		<transition id="id77">
+			<source ref="id52"/>
+			<target ref="id49"/>
+			<label kind="guard" x="-34" y="-272">c &gt;= 5</label>
+		</transition>
+		<transition id="id78">
+			<source ref="id51"/>
+			<target ref="id52"/>
+			<label kind="guard" x="93" y="-178">c&gt;=1</label>
+			<label kind="synchronisation" x="93" y="-170">EVGotError?</label>
+			<label kind="assignment" x="93" y="-144">c = 0</label>
+		</transition>
+		<transition id="id79">
+			<source ref="id50"/>
+			<target ref="id51"/>
+			<label kind="guard" x="-59" y="-59">c &gt;= 1</label>
+			<label kind="synchronisation" x="-42" y="-34">AutReq!</label>
+		</transition>
+		<transition id="id80">
+			<source ref="id49"/>
+			<target ref="id50"/>
+			<label kind="guard" x="-314" y="-93">Energy[car] &gt; 30</label>
+			<label kind="synchronisation" x="-263" y="0">CSbroad?</label>
+			<label kind="assignment" x="-195" y="-17">c = 0</label>
+		</transition>
+		<transition id="id81">
+			<source ref="id49"/>
+			<target ref="id48"/>
+			<label kind="guard" x="-493" y="76">Energy[car] &lt;= 30</label>
+			<nail x="-425" y="76"/>
+		</transition>
+		<transition id="id82">
+			<source ref="id48"/>
+			<target ref="id49"/>
+			<label kind="assignment" x="-493" y="-59">E_e = 25,
+Energy[car] = E_e,
+c = 0</label>
+		</transition>
+		<transition id="id83">
+			<source ref="id48"/>
+			<target ref="id49"/>
+			<label kind="assignment" x="-493" y="-178">E_e = 35, 
+Energy[car] = E_e,
+c = 0</label>
+			<nail x="-433" y="-136"/>
+		</transition>
+	</template>
+	<template>
+		<name>EAVES</name>
+		<location id="id84" x="-620" y="-408">
+			<name x="-630" y="-442">Eve</name>
+		</location>
+		<location id="id85" x="-272" y="-408">
+			<name x="-255" y="-425">CS</name>
+			<label kind="invariant" x="-221" y="-416">ec &lt;= 500</label>
+		</location>
+		<location id="id86" x="-459" y="-408">
+			<name x="-484" y="-442">GotEV</name>
+		</location>
+		<location id="id87" x="-272" y="-289">
+			<name x="-289" y="-272">CSfindEve</name>
+			<label kind="invariant" x="-255" y="-246">ec &lt;= 20</label>
+		</location>
+		<location id="id88" x="-272" y="-527">
+			<name x="-306" y="-561">GotCSRes</name>
+			<label kind="invariant" x="-246" y="-544">ec &lt;= 20</label>
+		</location>
+		<location id="id89" x="-620" y="-527">
+			<name x="-630" y="-561">EV</name>
+		</location>
+		<init ref="id84"/>
+		<transition id="id90">
+			<source ref="id84"/>
+			<target ref="id84"/>
+			<label kind="synchronisation" x="-625" y="-379">EveBroad!</label>
+			<nail x="-578" y="-374"/>
+			<nail x="-637" y="-374"/>
+		</transition>
+		<transition id="id91">
+			<source ref="id87"/>
+			<target ref="id89"/>
+			<label kind="guard" x="-348" y="-306">ec &gt;= 5</label>
+			<label kind="synchronisation" x="-670" y="-306">CSgotEve!</label>
+			<nail x="-688" y="-289"/>
+			<nail x="-688" y="-527"/>
+		</transition>
+		<transition id="id92">
+			<source ref="id89"/>
+			<target ref="id84"/>
+		</transition>
+		<transition id="id93">
+			<source ref="id88"/>
+			<target ref="id89"/>
+			<label kind="synchronisation" x="-501" y="-552">EvetoEVAutRes!</label>
+		</transition>
+		<transition id="id94">
+			<source ref="id85"/>
+			<target ref="id88"/>
+			<label kind="synchronisation" x="-272" y="-484">EveAutRes?</label>
+			<label kind="assignment" x="-272" y="-467">ec = 0</label>
+		</transition>
+		<transition id="id95">
+			<source ref="id85"/>
+			<target ref="id87"/>
+			<label kind="synchronisation" x="-272" y="-365">CSfindEVE?</label>
+			<label kind="assignment" x="-272" y="-348">ec = 0</label>
+		</transition>
+		<transition id="id96">
+			<source ref="id86"/>
+			<target ref="id85"/>
+			<label kind="guard" x="-408" y="-450">ec &gt;= 1</label>
+			<label kind="synchronisation" x="-425" y="-433">EvetoCSReq!</label>
+			<label kind="assignment" x="-441" y="-408">ec = 0</label>
+		</transition>
+		<transition id="id97">
+			<source ref="id84"/>
+			<target ref="id86"/>
+			<label kind="synchronisation" x="-586" y="-425">EveAutReq?</label>
+			<label kind="assignment" x="-602" y="-408">ec = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>EavesBroCast</name>
+		<location id="id98" x="-102" y="-76">
+		</location>
+		<init ref="id98"/>
+		<transition id="id99">
+			<source ref="id98"/>
+			<target ref="id98"/>
+			<label kind="synchronisation" x="-136" y="-170">EveBroad!</label>
+			<nail x="-110" y="-76"/>
+			<nail x="-212" y="-144"/>
+			<nail x="17" y="-144"/>
+		</transition>
+	</template>
+	<template>
+		<name>RSU</name>
+		<location id="id100" x="-204" y="-68">
+			<name x="-214" y="-102">RSU</name>
+		</location>
+		<location id="id101" x="102" y="-68">
+			<name x="92" y="-102">keyRSU</name>
+			<label kind="invariant" x="92" y="-51">rc &lt;= 20</label>
+		</location>
+		<location id="id102" x="102" y="93">
+			<name x="93" y="119">PT</name>
+		</location>
+		<location id="id103" x="-51" y="93">
+			<name x="-68" y="119">Bill</name>
+			<label kind="invariant" x="-61" y="110">rc &lt;= 20</label>
+		</location>
+		<location id="id104" x="-204" y="93">
+			<name x="-212" y="110">CS</name>
+		</location>
+		<init ref="id100"/>
+		<transition id="id105">
+			<source ref="id104"/>
+			<target ref="id100"/>
+		</transition>
+		<transition id="id106">
+			<source ref="id103"/>
+			<target ref="id104"/>
+			<label kind="synchronisation" x="-153" y="76">BillRSU!</label>
+		</transition>
+		<transition id="id107">
+			<source ref="id102"/>
+			<target ref="id103"/>
+			<label kind="synchronisation" x="0" y="76">BillPT?</label>
+			<label kind="assignment" x="-33" y="93">rc = 0</label>
+		</transition>
+		<transition id="id108">
+			<source ref="id101"/>
+			<target ref="id102"/>
+			<label kind="guard" x="102" y="-22">rc &gt;= 5</label>
+			<label kind="synchronisation" x="110" y="0">KeyPT!</label>
+			<label kind="assignment" x="102" y="12">rc = 0</label>
+		</transition>
+		<transition id="id109">
+			<source ref="id100"/>
+			<target ref="id101"/>
+			<label kind="synchronisation" x="-85" y="-93">KeyRSU?</label>
+			<label kind="assignment" x="-186" y="-68">rc = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>PT</name>
+		<location id="id110" x="-42" y="-119">
+			<name x="-52" y="-153">PT</name>
+		</location>
+		<location id="id111" x="178" y="-119">
+		</location>
+		<location id="id112" x="178" y="34">
+			<name x="229" y="25">sendchar</name>
+			<label kind="invariant" x="168" y="51">pc &lt;= 20</label>
+		</location>
+		<location id="id113" x="-42" y="34">
+			<name x="-52" y="0">charging</name>
+		</location>
+		<location id="id114" x="-246" y="34">
+			<name x="-256" y="0">sendbill</name>
+			<label kind="invariant" x="-256" y="51">pc &lt;= 20</label>
+		</location>
+		<location id="id115" x="-246" y="-119">
+		</location>
+		<init ref="id110"/>
+		<transition id="id116">
+			<source ref="id115"/>
+			<target ref="id110"/>
+		</transition>
+		<transition id="id117">
+			<source ref="id114"/>
+			<target ref="id115"/>
+			<label kind="synchronisation" x="-246" y="-59">BillPT!</label>
+		</transition>
+		<transition id="id118">
+			<source ref="id113"/>
+			<target ref="id114"/>
+			<label kind="synchronisation" x="-187" y="17">CharEnd?</label>
+			<label kind="assignment" x="-228" y="34">pc = 0</label>
+		</transition>
+		<transition id="id119">
+			<source ref="id112"/>
+			<target ref="id113"/>
+			<label kind="guard" x="110" y="8">pc &gt;= 5</label>
+			<label kind="synchronisation" x="34" y="17">CharAck!</label>
+			<label kind="assignment" x="-24" y="34">pc = 0</label>
+		</transition>
+		<transition id="id120">
+			<source ref="id111"/>
+			<target ref="id112"/>
+			<label kind="synchronisation" x="178" y="-59">CharReq?</label>
+			<label kind="assignment" x="178" y="-42">pc = 0</label>
+		</transition>
+		<transition id="id121">
+			<source ref="id110"/>
+			<target ref="id111"/>
+			<label kind="synchronisation" x="42" y="-136">KeyPT?</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+
+// List one or more processes to be composed into a system.
+system  CS, EV, msagError, TicketSYS, RSU, PT, EAVES;
+//CSBroCastEavesBroCast</system>
+	<queries>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment/>
+			<option key="--diagnostic" value="1"/>
+			<result outcome="failure" type="quality" timestamp="2026-03-05 17:45:07 -0700">
+				<option key="--diagnostic" value="1"/>
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; not deadlock</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-01-15 06:36:59 -0700">
+			</result>
+		</query>
+		<query>
+			<formula>A[] forall (i:int[0,N-1])(EV(i).Processing imply id[i])</formula>
+			<comment/>
+			<option key="--diagnostic" value="1"/>
+			<result outcome="success" type="quality" timestamp="2026-01-15 06:42:27 -0700">
+				<option key="--diagnostic" value="1"/>
+			</result>
+		</query>
+		<query>
+			<formula>A[] forall (i:int[0,N-1]) (EV(i).Processing imply serv == id[i])</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-02-12 17:57:53 -0700">
+			</result>
+		</query>
+		<query>
+			<formula>A&lt;&gt; forall (i:int[0,N-1]) (EV(i).EVreq imply EV(i).Charging)
+</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-01-15 06:47:18 -0700">
+			</result>
+		</query>
+		<query>
+			<formula>A[] forall (i:int[0,N-1]) forall (j:int[0,N-1]) i != j imply not (EV(i).EVreq &amp;&amp; EV(j).EVreq)</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-01-15 06:49:21 -0700">
+			</result>
+		</query>
+		<query>
+			<formula>A[] forall(i:id_t) forall(j:id_t) i != j imply not (EV(i).PT and EV(j).PT)</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-01-15 06:49:45 -0700">
+			</result>
+		</query>
+		<query>
+			<formula>A[] forall(i:id_t) id[i] &lt;= servnum</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-01-15 06:51:58 -0700">
+			</result>
+		</query>
+		<query>
+			<formula>A[] forall(i:int[0,N-1]) EV(i).charEnd imply Energy[i] &lt;= 30</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-01-15 06:55:47 -0700">
+			</result>
+		</query>
+		<query>
+			<formula>A[] forall (i:id_t) forall (j:id_t) i != j imply not (CS.GotAutReq and EV(i).EVreq and EV(j).EVreq)</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-01-15 06:59:13 -0700">
+			</result>
+		</query>
+	</queries>
+</nta>
