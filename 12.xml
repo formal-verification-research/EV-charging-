@@ -4,9 +4,9 @@
 	<declaration>// Place global declarations here.
 broadcast chan CSbroad, EveBroad;
 broadcast chan AutAck, AutReq, KeyRSU, KeyPT, BillPT, BillRSU, CharAck, CharReq, CharEnd, MasgError, NoMasgError, EVGotError, EVgotNoError, ServTickMatch, outserv, EvetoEVAutRes, CSgotEve, EveAutRes, EveAutReq, EvetoCSReq, CSfindEVE;
-const int N = 2;
-const int M = 2;
-const int servnum = 3;
+const int N = 3;
+const int M = 1;
+const int servnum = 4;
 typedef int[0,N-1] id_t;
 typedef int[0,M-1] id_e;
 //int E_e= fint(random(100));
@@ -152,6 +152,7 @@ clock c[N];</declaration>
 		</location>
 		<location id="id26" x="-425" y="8">
 			<name x="-450" y="25">FindEve</name>
+			<label kind="invariant" x="-442" y="42">t &lt;= 1</label>
 		</location>
 		<location id="id27" x="-425" y="-238">
 			<name x="-435" y="-272">SendKey</name>
@@ -159,7 +160,7 @@ clock c[N];</declaration>
 		</location>
 		<location id="id28" x="-569" y="-238">
 			<name x="-680" y="-246">CStoEveRes</name>
-			<label kind="exponentialrate" x="-579" y="-204">1</label>
+			<label kind="invariant" x="-579" y="-221">t&lt;=1</label>
 		</location>
 		<init ref="id14"/>
 		<transition id="id29">
@@ -280,30 +281,30 @@ clock c[N];</declaration>
 	</template>
 	<template>
 		<name>EV</name>
-		<parameter>const id_t car</parameter>
+		<parameter>const id_t Idcar</parameter>
 		<location id="id48" x="-561" y="-17">
 			<name x="-571" y="-51">EV</name>
 			<label kind="exponentialrate" x="-571" y="17">1</label>
 		</location>
 		<location id="id49" x="-306" y="-17">
 			<name x="-340" y="-51">CheckBatt</name>
-			<label kind="invariant" x="-340" y="17">c[car]&lt;= 500</label>
+			<label kind="invariant" x="-348" y="42">c[Idcar]&lt;= 500</label>
 		</location>
 		<location id="id50" x="-102" y="-17">
 			<name x="-153" y="-51">GotCSbroad</name>
-			<label kind="invariant" x="-112" y="0">c[car] &lt;= 20</label>
+			<label kind="invariant" x="-112" y="0">c[Idcar] &lt;= 20</label>
 		</location>
 		<location id="id51" x="93" y="-17">
 			<name x="68" y="-51">EVreq</name>
-			<label kind="invariant" x="136" y="-34">c[car] &lt;= 500</label>
+			<label kind="invariant" x="136" y="-34">c[Idcar] &lt;= 500</label>
 		</location>
 		<location id="id52" x="93" y="-272">
 			<name x="110" y="-289">EVFindError</name>
-			<label kind="invariant" x="83" y="-255">c[car] &lt;= 20</label>
+			<label kind="invariant" x="83" y="-255">c[Idcar] &lt;= 20</label>
 		</location>
 		<location id="id53" x="93" y="212">
 			<name x="110" y="195">compare</name>
-			<label kind="invariant" x="110" y="212">c[car] &lt;= 20</label>
+			<label kind="invariant" x="110" y="212">c[Idcar] &lt;= 20</label>
 		</location>
 		<location id="id54" x="-340" y="212">
 			<name x="-365" y="229">AutAcked</name>
@@ -311,30 +312,30 @@ clock c[N];</declaration>
 		</location>
 		<location id="id55" x="-110" y="212">
 			<name x="-136" y="246">Processing</name>
-			<label kind="invariant" x="-120" y="229">c[car] &lt;= 20</label>
+			<label kind="invariant" x="-120" y="229">c[Idcar] &lt;= 20</label>
 		</location>
 		<location id="id56" x="-552" y="212">
 			<name x="-562" y="178">PT</name>
-			<label kind="invariant" x="-562" y="229">c[car] &lt;= 1000</label>
+			<label kind="invariant" x="-562" y="229">c[Idcar] &lt;= 1000</label>
 		</location>
 		<location id="id57" x="-731" y="-17">
 			<name x="-741" y="-51">charEnd</name>
 		</location>
 		<location id="id58" x="-731" y="212">
 			<name x="-773" y="229">Charging</name>
-			<label kind="invariant" x="-714" y="212">c[car] &lt;= 60020</label>
+			<label kind="invariant" x="-714" y="212">c[Idcar] &lt;= 60020</label>
 		</location>
 		<location id="id59" x="-306" y="-357">
 			<name x="-316" y="-391">GotEveBroad</name>
-			<label kind="invariant" x="-316" y="-340">c[car] &lt;= 50</label>
+			<label kind="invariant" x="-316" y="-340">c[Idcar] &lt;= 50</label>
 		</location>
 		<location id="id60" x="-561" y="-357">
 			<name x="-571" y="-391">Eve</name>
-			<label kind="invariant" x="-571" y="-340">c[car] &lt;= 2000</label>
+			<label kind="invariant" x="-571" y="-340">c[Idcar] &lt;= 2000</label>
 		</location>
 		<location id="id61" x="-892" y="-357">
 			<name x="-902" y="-391">sendreq</name>
-			<label kind="invariant" x="-994" y="-357">c[car]&lt;=180000</label>
+			<label kind="invariant" x="-994" y="-357">c[Idcar]&lt;=180000</label>
 		</location>
 		<init ref="id48"/>
 		<transition id="id62">
@@ -347,9 +348,9 @@ serv = serv + 1</label>
 		<transition id="id63">
 			<source ref="id61"/>
 			<target ref="id56"/>
-			<label kind="guard" x="-884" y="-272">c[car]&gt;=5</label>
+			<label kind="guard" x="-884" y="-272">c[Idcar]&gt;=5</label>
 			<label kind="synchronisation" x="-884" y="-145">CharReq!</label>
-			<label kind="assignment" x="-866" y="263">c[car] = 0</label>
+			<label kind="assignment" x="-866" y="263">c[Idcar] = 0</label>
 			<nail x="-892" y="263"/>
 			<nail x="-552" y="263"/>
 		</transition>
@@ -357,34 +358,34 @@ serv = serv + 1</label>
 			<source ref="id60"/>
 			<target ref="id61"/>
 			<label kind="synchronisation" x="-791" y="-374">EvetoEVAutRes?</label>
-			<label kind="assignment" x="-858" y="-357">c[car] = 0,
+			<label kind="assignment" x="-858" y="-357">c[Idcar] = 0,
 serv = serv % servnum,
 serv = serv + 1</label>
 		</transition>
 		<transition id="id65">
 			<source ref="id59"/>
 			<target ref="id60"/>
-			<label kind="guard" x="-510" y="-408">c[car] &gt;= 1 &amp;&amp; serv == local_ticket[car]</label>
+			<label kind="guard" x="-510" y="-408">c[Idcar] &gt;= 1 &amp;&amp; serv == local_ticket[Idcar]</label>
 			<label kind="synchronisation" x="-459" y="-382">EveAutReq!</label>
-			<label kind="assignment" x="-408" y="-340">c[car] = 0</label>
+			<label kind="assignment" x="-408" y="-340">c[Idcar] = 0</label>
 		</transition>
 		<transition id="id66">
 			<source ref="id49"/>
 			<target ref="id59"/>
-			<label kind="guard" x="-382" y="-212">Energy[car] &gt; 3 &amp;&amp; randeve[car] &gt;=prob</label>
+			<label kind="guard" x="-535" y="-102">Energy[Idcar] &gt; 3 &amp;&amp; randeve[Idcar] &gt;=prob</label>
 			<label kind="synchronisation" x="-306" y="-229">EveBroad?</label>
-			<label kind="assignment" x="-450" y="-212">c[car] = 0,
-local_ticket[car] = ticket,
+			<label kind="assignment" x="-450" y="-212">c[Idcar] = 0,
+local_ticket[Idcar] = ticket,
 ticket = ticket % servnum,
 ticket = ticket + 1</label>
 		</transition>
 		<transition id="id67">
 			<source ref="id58"/>
 			<target ref="id57"/>
-			<label kind="guard" x="-731" y="153">c[car] &gt;= 5</label>
+			<label kind="guard" x="-731" y="153">c[Idcar] &gt;= 5</label>
 			<label kind="synchronisation" x="-731" y="80">CharEnd!</label>
-			<label kind="assignment" x="-731" y="97">Energy[car] = 0,
-local_ticket[car] = 0</label>
+			<label kind="assignment" x="-731" y="97">Energy[Idcar] = 0,
+local_ticket[Idcar] = 0</label>
 		</transition>
 		<transition id="id68">
 			<source ref="id57"/>
@@ -394,13 +395,13 @@ local_ticket[car] = 0</label>
 			<source ref="id56"/>
 			<target ref="id58"/>
 			<label kind="synchronisation" x="-680" y="187">CharAck?</label>
-			<label kind="assignment" x="-688" y="229">c[car] = 0</label>
+			<label kind="assignment" x="-688" y="229">c[Idcar] = 0</label>
 		</transition>
 		<transition id="id70">
 			<source ref="id54"/>
 			<target ref="id56"/>
 			<label kind="synchronisation" x="-484" y="187">CharReq!</label>
-			<label kind="assignment" x="-534" y="212">c[car] = 0</label>
+			<label kind="assignment" x="-534" y="212">c[Idcar] = 0</label>
 		</transition>
 		<transition id="id71">
 			<source ref="id55"/>
@@ -413,7 +414,7 @@ serv = serv + 1</label>
 			<source ref="id53"/>
 			<target ref="id55"/>
 			<label kind="synchronisation" x="-68" y="178">ServTickMatch!</label>
-			<label kind="assignment" x="-75" y="212">c[car] = 0</label>
+			<label kind="assignment" x="-75" y="212">c[Idcar] = 0</label>
 			<nail x="84" y="212"/>
 			<nail x="-93" y="212"/>
 		</transition>
@@ -421,7 +422,7 @@ serv = serv + 1</label>
 			<source ref="id51"/>
 			<target ref="id53"/>
 			<label kind="synchronisation" x="97" y="80">EVgotNoError?</label>
-			<label kind="assignment" x="93" y="97">c[car] = 0</label>
+			<label kind="assignment" x="93" y="97">c[Idcar] = 0</label>
 		</transition>
 		<transition id="id74">
 			<source ref="id52"/>
@@ -433,37 +434,37 @@ serv = serv + 1</label>
 			<source ref="id51"/>
 			<target ref="id52"/>
 			<label kind="synchronisation" x="93" y="-170">EVGotError?</label>
-			<label kind="assignment" x="93" y="-144">c[car] = 0</label>
+			<label kind="assignment" x="93" y="-144">c[Idcar] = 0</label>
 		</transition>
 		<transition id="id76">
 			<source ref="id50"/>
 			<target ref="id51"/>
-			<label kind="guard" x="-110" y="-76">c[car] &gt;= 1 &amp;&amp; serv == local_ticket[car]</label>
+			<label kind="guard" x="-110" y="-76">c[Idcar] &gt;= 1 &amp;&amp; serv == local_ticket[Idcar]</label>
 			<label kind="synchronisation" x="-42" y="-34">AutReq!</label>
-			<label kind="assignment" x="-84" y="-17">x[car] = 0</label>
+			<label kind="assignment" x="-84" y="-17">x[Idcar] = 0</label>
 		</transition>
 		<transition id="id77">
 			<source ref="id49"/>
 			<target ref="id50"/>
-			<label kind="guard" x="-442" y="-85">Energy[car] &gt; 2 &amp;&amp; randeve[car]&lt;prob</label>
+			<label kind="guard" x="-433" y="-68">Energy[Idcar] &gt; 2 &amp;&amp; randeve[Idcar]&lt;prob</label>
 			<label kind="synchronisation" x="-238" y="0">CSbroad?</label>
-			<label kind="assignment" x="-229" y="25">local_ticket[car] = ticket,
+			<label kind="assignment" x="-229" y="25">local_ticket[Idcar] = ticket,
 ticket = ticket % servnum,
 ticket = ticket + 1,
 
-c[car] = 0</label>
+c[Idcar] = 0</label>
 		</transition>
 		<transition id="id78">
 			<source ref="id49"/>
 			<target ref="id48"/>
-			<label kind="guard" x="-493" y="76">Energy[car] &lt;= 2</label>
+			<label kind="guard" x="-493" y="76">Energy[Idcar] &lt;= 2</label>
 			<nail x="-425" y="76"/>
 		</transition>
 		<transition id="id79">
 			<source ref="id48"/>
 			<target ref="id49"/>
 			<label kind="select" x="-510" y="-59">E_e : int[0,5]</label>
-			<label kind="assignment" x="-527" y="-8">Energy[car] = E_e, randeve[car] = random(100)</label>
+			<label kind="assignment" x="-722" y="-8">Energy[Idcar] = E_e, randeve[Idcar] = 20</label>
 		</transition>
 	</template>
 	<template>
@@ -675,9 +676,6 @@ system  CS, EV, msagError,  RSU, PT, EAVES;
 			<formula>A[] forall (i:int[0,N-1])(EV(i).Processing imply local_ticket[i])</formula>
 			<comment>In all paths, whenever any vehicle i is in the Processing state, its identifier (id[i]) must be non-zero (valid).</comment>
 			<option key="--diagnostic" value="1"/>
-			<result outcome="success" type="quality" timestamp="2026-04-23 11:50:10 -0600">
-				<option key="--diagnostic" value="1"/>
-			</result>
 		</query>
 		<query>
 			<formula>A[] forall (i:int[0,N-1]) (EV(i).Processing imply serv == local_ticket[i])</formula>
@@ -723,245 +721,254 @@ system  CS, EV, msagError,  RSU, PT, EAVES;
 			</result>
 		</query>
 		<query>
-			<formula>Pr[&lt;=9] (&lt;&gt; EV(0).GotCSbroad)</formula>
+			<formula>Pr[&lt;=19] (&lt;&gt; EV(0).GotCSbroad)</formula>
 			<comment/>
-			<result outcome="success" type="quantity" value="0.445946 ± 0.0495507 (95% CI)" timestamp="2026-05-01 13:44:59 -0600">
-				<details>0.445946 ± 0.0495507 (95% CI)</details>
+			<result outcome="success" type="quantity" value="0.493842 ± 0.0498981 (95% CI)" timestamp="2026-05-05 08:17:13 -0600">
+				<details>0.493842 ± 0.0498981 (95% CI)</details>
 				<plot title="Probability Density Distribution" xaxis="run duration in time" yaxis="probability density">
-					<series title="density" type="b(0.516292)" color="0x0000ff" encoding="csv">0.09133244437858407,0.11506275067907577
-0.6076241221236252,0.17259412601861365
-1.1239157998686664,0.16300556346202402
-1.6402074776137074,0.1582112821837292
-2.1564991553587487,0.09588562556589648
-2.67279083310379,0.028765687669768943
-3.1890825108488308,0.05753137533953789
-3.705374188593872,0.014382843834884472
-4.221665866338913,0.019177125113179296
-4.7379575440839545,0.02397140639147412
-5.254249221828996,0.0
-5.770540899574037,0.004794281278294824
-6.286832577319077,0.0
-6.803124255064119,0.009588562556589648
+					<series title="density" type="b(1.088636)" color="0x0000ff" encoding="csv">0.11324191627387908,0.1641136640643697
+1.2018779579243561,0.15271688183767737
+2.290513999574833,0.07521876269616945
+3.37915004122531,0.029631633789400084
+4.467786082875787,0.013676138672030809
+5.556422124526264,0.009117425781353872
+6.645058166176741,0.004558712890676936
+7.733694207827218,0.002279356445338468
+8.822330249477695,0.0
+9.910966291128172,0.0
+10.999602332778649,0.0
+12.088238374429125,0.0
+13.176874416079603,0.0
+14.26551045773008,0.0
+15.354146499380557,0.002279356445338468
 					</series>
-					<series title="average" type="pl" color="0x00dd00" encoding="csv">1.833154667585474,0.0
-1.833154667585474,0.17259412601861365
+					<series title="average" type="pl" color="0x00dd00" encoding="csv">1.9752501282900927,0.0
+1.9752501282900927,0.1641136640643697
 					</series>
-					<comment>Parameters: α=0.05, ε=0.05, bucket width=0.51629, bucket count=14
-Runs: 404 in total, 180 (44.554%) displayed, 224 (55.446%) remaining
-Span of displayed sample: [0.09133, 7.319]
-Mean estimate of displayed sample: 1.833 ± 0.1905 (95% CI)</comment>
+					<comment>Parameters: α=0.05, ε=0.05, bucket width=1.0886, bucket count=15
+Runs: 403 in total, 199 (49.38%) displayed, 204 (50.62%) remaining
+Span of displayed sample: [0.1132, 16.44]
+Mean estimate of displayed sample: 1.975 ± 0.2458 (95% CI)</comment>
 				</plot>
 				<plot title="Probability Density Confidence Intervals" xaxis="run duration in time" yaxis="probability density">
-					<series title="upper limit" type="b(0.516292)" color="0xa0a0ff" encoding="csv">0.09133244437858407,0.0871044395972369
-0.6076241221236252,0.12122939337400013
-1.1239157998686664,0.1156179120977516
-1.6402074776137074,0.1128021929544616
-2.1564991553587487,0.07542320667575823
-2.67279083310379,0.03204369602426758
-3.1890825108488308,0.051309923096318946
-3.705374188593872,0.021546755654749384
-4.221665866338913,0.025155214970209068
-4.7379575440839545,0.02864429520066416
-5.254249221828996,0.009089329753605269
-5.770540899574037,0.013713418760243613
-6.286832577319077,0.009089329753605269
-6.803124255064119,0.01776762866855746
+					<series title="upper limit" type="b(1.088636)" color="0xa0a0ff" encoding="csv">0.11324191627387908,0.21962049575201448
+1.2018779579243561,0.20626632886478008
+2.290513999574833,0.1130773001493152
+3.37915004122531,0.054530609985153786
+4.467786082875787,0.03212250980472602
+5.556422124526264,0.025217150585838136
+6.645058166176741,0.017811431285657764
+7.733694207827218,0.013747254246970214
+8.822330249477695,0.009111780854276446
+9.910966291128172,0.009111780854276446
+10.999602332778649,0.009111780854276446
+12.088238374429125,0.009111780854276446
+13.176874416079603,0.009111780854276446
+14.26551045773008,0.009111780854276446
+15.354146499380557,0.013747254246970214
 					</series>
-					<series title="lower limit" type="b(0.516292)" color="0x0000ff" encoding="csv">0.09133244437858407,0.03842965929717323
-0.6076241221236252,0.06319140985881126
-1.1239157998686664,0.0589852362827169
-1.6402074776137074,0.056892502233430724
-2.1564991553587487,0.030497601792542243
-2.67279083310379,0.005469224252817691
-3.1890825108488308,0.01544020795488196
-3.705374188593872,0.0015339924252299464
-4.221665866338913,0.002704090125951999
-4.7379575440839545,0.004030411114447761
-5.254249221828996,0.0
-5.770540899574037,6.266587795710816E-5
-6.286832577319077,0.0
-6.803124255064119,6.000911979088712E-4
+					<series title="lower limit" type="b(1.088636)" color="0x0000ff" encoding="csv">0.11324191627387908,0.1424970301704342
+1.2018779579243561,0.13122832825137687
+2.290513999574833,0.05703538112541466
+3.37915004122531,0.01728566464318896
+4.467786082875787,0.005482843063246878
+5.556422124526264,0.0027108160216953903
+6.645058166176741,6.01581661658122E-4
+7.733694207827218,6.28213715291621E-5
+8.822330249477695,0.0
+9.910966291128172,0.0
+10.999602332778649,0.0
+12.088238374429125,0.0
+13.176874416079603,0.0
+14.26551045773008,0.0
+15.354146499380557,6.28213715291621E-5
 					</series>
-					<series title="average" type="pl" color="0x00dd00" encoding="csv">1.833154667585474,0.0
-1.833154667585474,0.234807955656931
+					<series title="average" type="pl" color="0x00dd00" encoding="csv">1.9752501282900927,0.0
+1.9752501282900927,0.20173913718587588
 					</series>
-					<comment>Parameters: α=0.05, ε=0.05, bucket width=0.51629, bucket count=14
-Runs: 404 in total, 180 (44.554%) displayed, 224 (55.446%) remaining
-Span of displayed sample: [0.09133, 7.319]
-Mean estimate of displayed sample: 1.833 ± 0.1905 (95% CI)</comment>
+					<comment>Parameters: α=0.05, ε=0.05, bucket width=1.0886, bucket count=15
+Runs: 403 in total, 199 (49.38%) displayed, 204 (50.62%) remaining
+Span of displayed sample: [0.1132, 16.44]
+Mean estimate of displayed sample: 1.975 ± 0.2458 (95% CI)</comment>
 				</plot>
 				<plot title="Probability Distribution" xaxis="run duration in time" yaxis="probability">
-					<series title="probability" type="b(0.516292)" color="0x0000ff" encoding="csv">0.09133244437858407,0.0594059405940594
-0.6076241221236252,0.0891089108910891
-1.1239157998686664,0.08415841584158416
-1.6402074776137074,0.08168316831683169
-2.1564991553587487,0.04950495049504951
-2.67279083310379,0.01485148514851485
-3.1890825108488308,0.0297029702970297
-3.705374188593872,0.007425742574257425
-4.221665866338913,0.009900990099009901
-4.7379575440839545,0.012376237623762377
-5.254249221828996,0.0
-5.770540899574037,0.0024752475247524753
-6.286832577319077,0.0
-6.803124255064119,0.0049504950495049506
+					<series title="probability" type="b(1.088636)" color="0x0000ff" encoding="csv">0.11324191627387908,0.17866004962779156
+1.2018779579243561,0.1662531017369727
+2.290513999574833,0.08188585607940446
+3.37915004122531,0.03225806451612903
+4.467786082875787,0.01488833746898263
+5.556422124526264,0.009925558312655087
+6.645058166176741,0.004962779156327543
+7.733694207827218,0.0024813895781637717
+8.822330249477695,0.0
+9.910966291128172,0.0
+10.999602332778649,0.0
+12.088238374429125,0.0
+13.176874416079603,0.0
+14.26551045773008,0.0
+15.354146499380557,0.0024813895781637717
 					</series>
-					<series title="average" type="pl" color="0x00dd00" encoding="csv">1.833154667585474,0.0
-1.833154667585474,0.0891089108910891
+					<series title="average" type="pl" color="0x00dd00" encoding="csv">1.9752501282900927,0.0
+1.9752501282900927,0.17866004962779156
 					</series>
-					<comment>Parameters: α=0.05, ε=0.05, bucket width=0.51629, bucket count=14
-Runs: 404 in total, 180 (44.554%) displayed, 224 (55.446%) remaining
-Span of displayed sample: [0.09133, 7.319]
-Mean estimate of displayed sample: 1.833 ± 0.1905 (95% CI)</comment>
+					<comment>Parameters: α=0.05, ε=0.05, bucket width=1.0886, bucket count=15
+Runs: 403 in total, 199 (49.38%) displayed, 204 (50.62%) remaining
+Span of displayed sample: [0.1132, 16.44]
+Mean estimate of displayed sample: 1.975 ± 0.2458 (95% CI)</comment>
 				</plot>
 				<plot title="Probability Confidence Intervals" xaxis="run duration in time" yaxis="probability">
-					<series title="upper limit" type="b(0.516292)" color="0xa0a0ff" encoding="csv">0.09133244437858407,0.0871044395972369
-0.6076241221236252,0.12122939337400013
-1.1239157998686664,0.1156179120977516
-1.6402074776137074,0.1128021929544616
-2.1564991553587487,0.07542320667575823
-2.67279083310379,0.03204369602426758
-3.1890825108488308,0.051309923096318946
-3.705374188593872,0.021546755654749384
-4.221665866338913,0.025155214970209068
-4.7379575440839545,0.02864429520066416
-5.254249221828996,0.009089329753605269
-5.770540899574037,0.013713418760243613
-6.286832577319077,0.009089329753605269
-6.803124255064119,0.01776762866855746
+					<series title="upper limit" type="b(1.088636)" color="0xa0a0ff" encoding="csv">0.11324191627387908,0.21962049575201448
+1.2018779579243561,0.20626632886478008
+2.290513999574833,0.1130773001493152
+3.37915004122531,0.054530609985153786
+4.467786082875787,0.03212250980472602
+5.556422124526264,0.025217150585838136
+6.645058166176741,0.017811431285657764
+7.733694207827218,0.013747254246970214
+8.822330249477695,0.009111780854276446
+9.910966291128172,0.009111780854276446
+10.999602332778649,0.009111780854276446
+12.088238374429125,0.009111780854276446
+13.176874416079603,0.009111780854276446
+14.26551045773008,0.009111780854276446
+15.354146499380557,0.013747254246970214
 					</series>
-					<series title="lower limit" type="b(0.516292)" color="0x0000ff" encoding="csv">0.09133244437858407,0.03842965929717323
-0.6076241221236252,0.06319140985881126
-1.1239157998686664,0.0589852362827169
-1.6402074776137074,0.056892502233430724
-2.1564991553587487,0.030497601792542243
-2.67279083310379,0.005469224252817691
-3.1890825108488308,0.01544020795488196
-3.705374188593872,0.0015339924252299464
-4.221665866338913,0.002704090125951999
-4.7379575440839545,0.004030411114447761
-5.254249221828996,0.0
-5.770540899574037,6.266587795710816E-5
-6.286832577319077,0.0
-6.803124255064119,6.000911979088712E-4
+					<series title="lower limit" type="b(1.088636)" color="0x0000ff" encoding="csv">0.11324191627387908,0.1424970301704342
+1.2018779579243561,0.13122832825137687
+2.290513999574833,0.05703538112541466
+3.37915004122531,0.01728566464318896
+4.467786082875787,0.005482843063246878
+5.556422124526264,0.0027108160216953903
+6.645058166176741,6.01581661658122E-4
+7.733694207827218,6.28213715291621E-5
+8.822330249477695,0.0
+9.910966291128172,0.0
+10.999602332778649,0.0
+12.088238374429125,0.0
+13.176874416079603,0.0
+14.26551045773008,0.0
+15.354146499380557,6.28213715291621E-5
 					</series>
-					<series title="average" type="pl" color="0x00dd00" encoding="csv">1.833154667585474,0.0
-1.833154667585474,0.12122939337400013
+					<series title="average" type="pl" color="0x00dd00" encoding="csv">1.9752501282900927,0.0
+1.9752501282900927,0.21962049575201448
 					</series>
-					<comment>Parameters: α=0.05, ε=0.05, bucket width=0.51629, bucket count=14
-Runs: 404 in total, 180 (44.554%) displayed, 224 (55.446%) remaining
-Span of displayed sample: [0.09133, 7.319]
-Mean estimate of displayed sample: 1.833 ± 0.1905 (95% CI)</comment>
+					<comment>Parameters: α=0.05, ε=0.05, bucket width=1.0886, bucket count=15
+Runs: 403 in total, 199 (49.38%) displayed, 204 (50.62%) remaining
+Span of displayed sample: [0.1132, 16.44]
+Mean estimate of displayed sample: 1.975 ± 0.2458 (95% CI)</comment>
 				</plot>
 				<plot title="Cumulative Probability Distribution" xaxis="run duration in time" yaxis="probability">
-					<series title="cumulative" type="l" color="0x000000" encoding="csv">0.09133244437858407,0.0
-0.6076241221236252,0.0594059405940594
-1.1239157998686664,0.1485148514851485
-1.6402074776137074,0.23267326732673269
-2.1564991553587487,0.31435643564356436
-2.67279083310379,0.36386138613861385
-3.1890825108488308,0.3787128712871287
-3.705374188593872,0.4084158415841584
-4.221665866338913,0.4158415841584158
-4.7379575440839545,0.42574257425742573
-5.254249221828996,0.4381188118811881
-5.770540899574037,0.4381188118811881
-6.286832577319077,0.4405940594059406
-6.803124255064119,0.4405940594059406
+					<series title="cumulative" type="l" color="0x000000" encoding="csv">0.11324191627387908,0.0
+1.2018779579243561,0.17866004962779156
+2.290513999574833,0.34491315136476425
+3.37915004122531,0.4267990074441687
+4.467786082875787,0.45905707196029777
+5.556422124526264,0.4739454094292804
+6.645058166176741,0.4838709677419355
+7.733694207827218,0.48883374689826303
+8.822330249477695,0.4913151364764268
+9.910966291128172,0.4913151364764268
+10.999602332778649,0.4913151364764268
+12.088238374429125,0.4913151364764268
+13.176874416079603,0.4913151364764268
+14.26551045773008,0.4913151364764268
+15.354146499380557,0.4913151364764268
 					</series>
-					<series title="average" type="pl" color="0x00dd00" encoding="csv">1.833154667585474,0.0
-1.833154667585474,0.4455445544554455
+					<series title="average" type="pl" color="0x00dd00" encoding="csv">1.9752501282900927,0.0
+1.9752501282900927,0.49379652605459057
 					</series>
-					<comment>Parameters: α=0.05, ε=0.05, bucket width=0.51629, bucket count=14
-Runs: 404 in total, 180 (44.554%) displayed, 224 (55.446%) remaining
-Span of displayed sample: [0.09133, 7.319]
-Mean estimate of displayed sample: 1.833 ± 0.1905 (95% CI)</comment>
+					<comment>Parameters: α=0.05, ε=0.05, bucket width=1.0886, bucket count=15
+Runs: 403 in total, 199 (49.38%) displayed, 204 (50.62%) remaining
+Span of displayed sample: [0.1132, 16.44]
+Mean estimate of displayed sample: 1.975 ± 0.2458 (95% CI)</comment>
 				</plot>
 				<plot title="Cumulative Probability Confidence Intervals" xaxis="run duration in time" yaxis="probability">
-					<series title="upper limit" type="k" color="0x0000dd" encoding="csv">0.09133244437858407,0.009089329753605269
-0.6076241221236252,0.0871044395972369
-1.1239157998686664,0.1869953954247993
-1.6402074776137074,0.27699041545848707
-2.1564991553587487,0.3621046917757364
-2.67279083310379,0.4128750862225742
-3.1890825108488308,0.4280000857299126
-3.705374188593872,0.45811085760137393
-4.221665866338913,0.4656102136472332
-4.7379575440839545,0.47559203481924484
-5.254249221828996,0.4880417332083674
-5.770540899574037,0.4880417332083674
-6.286832577319077,0.4905280211633976
-6.803124255064119,0.4905280211633976
+					<series title="upper limit" type="k" color="0x0000dd" encoding="csv">0.11324191627387908,0.009111780854276446
+1.2018779579243561,0.21962049575201448
+2.290513999574833,0.39357109242754185
+3.37915004122531,0.47671958705980727
+4.467786082875787,0.5090987794061266
+5.556422124526264,0.5239740207935816
+6.645058166176741,0.5338668469810331
+7.733694207827218,0.5388060788012343
+8.822330249477695,0.5412739011723247
+9.910966291128172,0.5412739011723247
+10.999602332778649,0.5412739011723247
+12.088238374429125,0.5412739011723247
+13.176874416079603,0.5412739011723247
+14.26551045773008,0.5412739011723247
+15.354146499380557,0.5412739011723247
 					</series>
-					<series title="lower limit" type="k" color="0xdd0000" encoding="csv">0.09133244437858407,0.0
-0.6076241221236252,0.03842965929717323
-1.1239157998686664,0.11528481520317382
-1.6402074776137074,0.19232211060356094
-2.1564991553587487,0.2693532085547044
-2.67279083310379,0.31685832538036063
-3.1890825108488308,0.3312164763049041
-3.705374188593872,0.3600724994549693
-4.221665866338913,0.36731492639466967
-4.7379575440839545,0.37698885863545295
-5.254249221828996,0.38910891164751976
-5.770540899574037,0.38910891164751976
-6.286832577319077,0.39153658094763283
-6.803124255064119,0.39153658094763283
+					<series title="lower limit" type="k" color="0xdd0000" encoding="csv">0.11324191627387908,0.0
+1.2018779579243561,0.1424970301704342
+2.290513999574833,0.29855236470463353
+3.37915004122531,0.37796128647684635
+4.467786082875787,0.40962088754368414
+5.556422124526264,0.4243021064785025
+6.645058166176741,0.43411360643917707
+7.733694207827218,0.43902654138420993
+8.822330249477695,0.4414848030168906
+9.910966291128172,0.4414848030168906
+10.999602332778649,0.4414848030168906
+12.088238374429125,0.4414848030168906
+13.176874416079603,0.4414848030168906
+14.26551045773008,0.4414848030168906
+15.354146499380557,0.4414848030168906
 					</series>
-					<series title="cumulative" type="l" color="0x000000" encoding="csv">0.09133244437858407,0.0
-0.6076241221236252,0.0594059405940594
-1.1239157998686664,0.1485148514851485
-1.6402074776137074,0.23267326732673269
-2.1564991553587487,0.31435643564356436
-2.67279083310379,0.36386138613861385
-3.1890825108488308,0.3787128712871287
-3.705374188593872,0.4084158415841584
-4.221665866338913,0.4158415841584158
-4.7379575440839545,0.42574257425742573
-5.254249221828996,0.4381188118811881
-5.770540899574037,0.4381188118811881
-6.286832577319077,0.4405940594059406
-6.803124255064119,0.4405940594059406
+					<series title="cumulative" type="l" color="0x000000" encoding="csv">0.11324191627387908,0.0
+1.2018779579243561,0.17866004962779156
+2.290513999574833,0.34491315136476425
+3.37915004122531,0.4267990074441687
+4.467786082875787,0.45905707196029777
+5.556422124526264,0.4739454094292804
+6.645058166176741,0.4838709677419355
+7.733694207827218,0.48883374689826303
+8.822330249477695,0.4913151364764268
+9.910966291128172,0.4913151364764268
+10.999602332778649,0.4913151364764268
+12.088238374429125,0.4913151364764268
+13.176874416079603,0.4913151364764268
+14.26551045773008,0.4913151364764268
+15.354146499380557,0.4913151364764268
 					</series>
-					<series title="average" type="pl" color="0x00dd00" encoding="csv">1.833154667585474,0.0
-1.833154667585474,0.4455445544554455
+					<series title="average" type="pl" color="0x00dd00" encoding="csv">1.9752501282900927,0.0
+1.9752501282900927,0.49379652605459057
 					</series>
-					<comment>Parameters: α=0.05, ε=0.05, bucket width=0.51629, bucket count=14
-Runs: 404 in total, 180 (44.554%) displayed, 224 (55.446%) remaining
-Span of displayed sample: [0.09133, 7.319]
-Mean estimate of displayed sample: 1.833 ± 0.1905 (95% CI)</comment>
+					<comment>Parameters: α=0.05, ε=0.05, bucket width=1.0886, bucket count=15
+Runs: 403 in total, 199 (49.38%) displayed, 204 (50.62%) remaining
+Span of displayed sample: [0.1132, 16.44]
+Mean estimate of displayed sample: 1.975 ± 0.2458 (95% CI)</comment>
 				</plot>
 				<plot title="Frequency Histogram" xaxis="run duration in time" yaxis="count">
-					<series title="count" type="b(0.516292)" color="0x0000ff" encoding="csv">0.09133244437858407,24.0
-0.6076241221236252,36.0
-1.1239157998686664,34.0
-1.6402074776137074,33.0
-2.1564991553587487,20.0
-2.67279083310379,6.0
-3.1890825108488308,12.0
-3.705374188593872,3.0
-4.221665866338913,4.0
-4.7379575440839545,5.0
-5.254249221828996,0.0
-5.770540899574037,1.0
-6.286832577319077,0.0
-6.803124255064119,2.0
+					<series title="count" type="b(1.088636)" color="0x0000ff" encoding="csv">0.11324191627387908,72.0
+1.2018779579243561,67.0
+2.290513999574833,33.0
+3.37915004122531,13.0
+4.467786082875787,6.0
+5.556422124526264,4.0
+6.645058166176741,2.0
+7.733694207827218,1.0
+8.822330249477695,0.0
+9.910966291128172,0.0
+10.999602332778649,0.0
+12.088238374429125,0.0
+13.176874416079603,0.0
+14.26551045773008,0.0
+15.354146499380557,1.0
 					</series>
-					<series title="average" type="pl" color="0x00dd00" encoding="csv">1.833154667585474,0.0
-1.833154667585474,36.0
+					<series title="average" type="pl" color="0x00dd00" encoding="csv">1.9752501282900927,0.0
+1.9752501282900927,72.0
 					</series>
-					<comment>Parameters: α=0.05, ε=0.05, bucket width=0.51629, bucket count=14
-Runs: 404 in total, 180 (44.554%) displayed, 224 (55.446%) remaining
-Span of displayed sample: [0.09133, 7.319]
-Mean estimate of displayed sample: 1.833 ± 0.1905 (95% CI)</comment>
+					<comment>Parameters: α=0.05, ε=0.05, bucket width=1.0886, bucket count=15
+Runs: 403 in total, 199 (49.38%) displayed, 204 (50.62%) remaining
+Span of displayed sample: [0.1132, 16.44]
+Mean estimate of displayed sample: 1.975 ± 0.2458 (95% CI)</comment>
 				</plot>
 			</result>
 		</query>
 		<query>
 			<formula>A[] (CS.GotAutReq imply t &lt;= 50)</formula>
 			<comment>This query verifies that once the CS (Charging Station) enters the GotAutReq state, it must transition or resolve within the defined time constraint of t &lt;=50. </comment>
-			<result outcome="success" type="quality" timestamp="2026-04-20 09:54:29 -0600">
-			</result>
 		</query>
 		<query>
 			<formula>A[] forall (i : id_t) (EV(i).Processing imply c &lt;= 20)</formula>
