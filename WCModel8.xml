@@ -1,0 +1,751 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+broadcast chan SDPReq;
+chan CharReq;
+chan SDPRes, EVTCPReq, EVTCPAck, CSTCPRes, EVToEVETCPReq;
+//chan SDPReq, SDPRes, EVTCPReq, EVTCPAck, CSTCPRes, EVToEVETCPReq;
+chan TLSReq, CSTLSRes, EVTLSRes, EVETLSRes, EVETLSAck, CSTLSAck;
+chan EveSDPRes, EVETCPRes, EVETCPAck;
+chan AutReq, AutAck, AutReject, CharAck, CharFail, CharEnd, AutReqtoEVE, CharReqGet;
+
+chan KeyRSU, NotifyPT, BillRSU, BillPT, KeyPT, CharFailEnd, PTCharFail;
+const int N = 2;
+const int ConcurSDPResThr = 10;
+typedef int[0,N-1] id_t;
+int Energy[N], local_ticket[N], local_EVEticket[N];
+int ticket = 1, EVEticket = 1, serv = 1, servEVE = 1;
+const int MaxServ = 3;
+clock EVclock[N];
+clock t, pt, rt, evet, CSsdpT, evesdpT;</declaration>
+	<template>
+		<name x="5" y="5">EV</name>
+		<parameter>const id_t idEV</parameter>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id0" x="204" y="255">
+			<name x="194" y="221">EV</name>
+		</location>
+		<location id="id1" x="680" y="255">
+			<name x="603" y="280">WaitSDPResponse</name>
+			<label kind="invariant" x="586" y="221">EVclock[idEV]&lt;= 250</label>
+		</location>
+		<location id="id2" x="851" y="255">
+			<name x="784" y="212">ReceivedSDPResponse</name>
+		</location>
+		<location id="id3" x="850" y="-136">
+			<name x="808" y="-170">TicketCheck</name>
+		</location>
+		<location id="id4" x="689" y="-136">
+			<name x="646" y="-179">TCPReq</name>
+			<label kind="invariant" x="663" y="-76">EVclock[idEV] &lt;= 2000</label>
+		</location>
+		<location id="id5" x="365" y="255">
+			<name x="339" y="280">CheckBatt</name>
+		</location>
+		<location id="id6" x="528" y="-136">
+			<name x="485" y="-179">TCPHandShake</name>
+			<label kind="invariant" x="518" y="-93">EVclock[idEV] &lt;= 2000</label>
+		</location>
+		<location id="id7" x="178" y="-136">
+			<name x="127" y="-179">TLSHandShake</name>
+			<label kind="invariant" x="160" y="-102">EVclock[idEV] &lt;= 2000</label>
+		</location>
+		<location id="id8" x="850" y="357">
+			<name x="773" y="374">EVESDPResponse</name>
+			<label kind="invariant" x="833" y="323">EVclock[idEV] &lt;= 2000</label>
+		</location>
+		<location id="id9" x="850" y="476">
+			<name x="773" y="493">EVETicketCheck</name>
+		</location>
+		<location id="id10" x="603" y="476">
+			<name x="552" y="493">EveTCPReq</name>
+			<label kind="invariant" x="561" y="425">EVclock[idEV] &lt;= 2000</label>
+		</location>
+		<location id="id11" x="306" y="476">
+			<name x="229" y="493">EveTCPHandShake</name>
+			<label kind="invariant" x="221" y="416">EVclock[idEV] &lt;= 2000</label>
+		</location>
+		<location id="id12" x="-136" y="476">
+			<name x="-187" y="501">EveTLSHandShake</name>
+			<label kind="invariant" x="-178" y="433">EVclock[idEV] &lt;= 2000</label>
+		</location>
+		<location id="id13" x="-322" y="-136">
+			<name x="-356" y="-179">TLSReady</name>
+			<label kind="invariant" x="-382" y="-119">EVclock[idEV] &lt;= 2000</label>
+		</location>
+		<location id="id14" x="-331" y="476">
+			<name x="-374" y="493">EveTLSReady</name>
+			<label kind="invariant" x="-416" y="442">EVclock[idEV] &lt;= 2000</label>
+		</location>
+		<location id="id15" x="527" y="255">
+			<name x="467" y="280">SendSDPRequest</name>
+		</location>
+		<location id="id16" x="-323" y="-25">
+			<name x="-374" y="0">SendReq</name>
+			<label kind="invariant" x="-399" y="59">EVclock[idEV]&lt;= 2000</label>
+		</location>
+		<location id="id17" x="-144" y="-25">
+			<name x="-154" y="-59">Pass</name>
+			<label kind="invariant" x="-154" y="-8">EVclock[idEV] &lt;= 2000</label>
+		</location>
+		<location id="id18" x="51" y="-25">
+			<name x="25" y="-93">SendChaReq</name>
+		</location>
+		<location id="id19" x="204" y="-25">
+			<name x="170" y="-59">Charging</name>
+			<label kind="invariant" x="136" y="-8">EVclock[idEV] &lt;= 60000</label>
+		</location>
+		<location id="id20" x="-144" y="51">
+			<name x="-154" y="17">Fail</name>
+		</location>
+		<location id="id21" x="-331" y="374">
+			<name x="-306" y="382">SendReqtoEVE</name>
+			<label kind="invariant" x="-341" y="391">EVclock[idEV]&lt;= 2000</label>
+		</location>
+		<location id="id22" x="-42" y="-76">
+			<name x="-102" y="-102">EveIntercept</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="id23">
+			<source ref="id11"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="59" y="459">TLSReq!</label>
+			<label kind="assignment" x="17" y="476">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id24">
+			<source ref="id7"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-8" y="-161">CSTLSAck?</label>
+			<label kind="assignment" x="-76" y="-127">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id25">
+			<source ref="id1"/>
+			<target ref="id15"/>
+			<label kind="guard" x="596" y="187">EVclock[idEV] &gt;= 250</label>
+			<nail x="578" y="187"/>
+		</transition>
+		<transition id="id26">
+			<source ref="id22"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="-24" y="-76">CharReq!</label>
+			<label kind="assignment" x="-25" y="-59">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id27">
+			<source ref="id17"/>
+			<target ref="id22"/>
+			<label kind="synchronisation" x="-161" y="-76">CharReqGet!</label>
+			<label kind="assignment" x="-203" y="-50">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id28">
+			<source ref="id21"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="-313" y="314">Energy[idEV] = 0,
+local_EVEticket[idEV] = 0,
+servEVE = (servEVE + 1) % MaxServ</label>
+		</transition>
+		<transition id="id29">
+			<source ref="id14"/>
+			<target ref="id21"/>
+			<label kind="synchronisation" x="-331" y="408">AutReqtoEVE!</label>
+			<label kind="assignment" x="-331" y="425">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id30">
+			<source ref="id19"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="212" y="76">CharEnd!</label>
+			<label kind="assignment" x="204" y="25">Energy[idEV] = 0,
+local_ticket[idEV] = 0,
+serv = (serv + 1) % MaxServ</label>
+		</transition>
+		<transition id="id31">
+			<source ref="id20"/>
+			<target ref="id15"/>
+			<label kind="assignment" x="-127" y="110">Energy[idEV] = 0,
+local_ticket[idEV] = 0,
+serv = (serv + 1) % MaxServ</label>
+		</transition>
+		<transition id="id32">
+			<source ref="id16"/>
+			<target ref="id20"/>
+			<label kind="synchronisation" x="-297" y="25">AutReject?</label>
+			<label kind="assignment" x="-305" y="13">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id33">
+			<source ref="id18"/>
+			<target ref="id19"/>
+			<label kind="synchronisation" x="102" y="-51">CharAck?</label>
+			<nail x="59" y="-25"/>
+		</transition>
+		<transition id="id34">
+			<source ref="id17"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="-102" y="-42">CharReq!</label>
+			<label kind="assignment" x="-126" y="-25">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id35">
+			<source ref="id16"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="-263" y="-42">AutAck?</label>
+			<label kind="assignment" x="-305" y="-25">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id36">
+			<source ref="id13"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-322" y="-97">AutReq!</label>
+			<label kind="assignment" x="-374" y="-76">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id37">
+			<source ref="id15"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="562" y="255">SDPReq!</label>
+			<label kind="assignment" x="535" y="272">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id38">
+			<source ref="id5"/>
+			<target ref="id15"/>
+			<label kind="guard" x="365" y="255">Energy[idEV] &gt; 2</label>
+		</transition>
+		<transition id="id39">
+			<source ref="id12"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-280" y="459">EVETLSAck?</label>
+			<label kind="assignment" x="-313" y="476">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id40">
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="408" y="459">EVETCPRes?</label>
+			<label kind="assignment" x="391" y="476">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id41">
+			<source ref="id9"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="705" y="442">EVToEVETCPReq!</label>
+			<label kind="assignment" x="706" y="476">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id42">
+			<source ref="id8"/>
+			<target ref="id9"/>
+			<label kind="guard" x="680" y="399">servEVE == local_EVEticket[idEV]</label>
+		</transition>
+		<transition id="id43">
+			<source ref="id1"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="705" y="331">EveSDPRes?</label>
+			<label kind="assignment" x="382" y="323">local_EVEticket[idEV] = EVEticket,
+EVEticket = (EVEticket + 1)% MaxServ,
+EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id44">
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="409" y="-153">TLSReq!</label>
+			<label kind="assignment" x="376" y="-136">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id45">
+			<source ref="id4"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="562" y="-153">CSTCPRes?</label>
+			<label kind="assignment" x="546" y="-136">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id46">
+			<source ref="id5"/>
+			<target ref="id0"/>
+			<label kind="guard" x="212" y="297">Energy[idEV] &lt;= 2</label>
+			<nail x="289" y="297"/>
+		</transition>
+		<transition id="id47">
+			<source ref="id0"/>
+			<target ref="id5"/>
+			<label kind="select" x="212" y="178">EV_e : int[0,10]</label>
+			<label kind="assignment" x="195" y="195">Energy[idEV] = EV_e</label>
+		</transition>
+		<transition id="id48">
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="740" y="-153">EVTCPReq!</label>
+			<label kind="assignment" x="707" y="-136">EVclock[idEV] = 0</label>
+		</transition>
+		<transition id="id49">
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="722" y="153">serv == local_ticket[idEV]</label>
+		</transition>
+		<transition id="id50">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="731" y="238">SDPRes?</label>
+			<label kind="assignment" x="467" y="110">local_ticket[idEV] = ticket,
+ticket = (ticket + 1)% MaxServ,
+EVclock[idEV] = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>CS</name>
+		<location id="id51" x="85" y="221">
+			<name x="75" y="187">CS</name>
+		</location>
+		<location id="id52" x="357" y="-76">
+			<name x="314" y="-118">TCPReqReceived</name>
+			<label kind="invariant" x="347" y="-59">t &lt;= 2000</label>
+		</location>
+		<location id="id53" x="170" y="-76">
+			<name x="128" y="-118">TCPHandShake</name>
+			<label kind="invariant" x="160" y="-59">t &lt;= 2000</label>
+		</location>
+		<location id="id54" x="-76" y="-76">
+			<name x="-119" y="-118">TLSReqRecieved</name>
+			<label kind="invariant" x="-86" y="-59">t &lt;= 2000</label>
+		</location>
+		<location id="id55" x="-544" y="-76">
+			<name x="-578" y="-118">TLSReady</name>
+			<label kind="invariant" x="-554" y="-59">t &lt;= 2000</label>
+		</location>
+		<location id="id56" x="-544" y="42">
+			<name x="-595" y="59">CheckAutReq</name>
+			<label kind="invariant" x="-586" y="76">t &lt;= 2000</label>
+		</location>
+		<location id="id57" x="-382" y="42">
+			<name x="-399" y="8">AcceptEV</name>
+			<label kind="invariant" x="-392" y="59">t &lt;= 2000</label>
+		</location>
+		<location id="id58" x="-221" y="42">
+			<name x="-231" y="8">SendKey</name>
+		</location>
+		<location id="id59" x="-51" y="42">
+			<name x="-110" y="0">ChargingEnd</name>
+			<label kind="invariant" x="-61" y="59">t &lt;= 2000</label>
+		</location>
+		<location id="id60" x="93" y="42">
+			<name x="68" y="0">NotePT</name>
+			<label kind="invariant" x="83" y="59">t &lt;= 2000</label>
+		</location>
+		<location id="id61" x="-382" y="110">
+			<name x="-399" y="76">RejectEV</name>
+		</location>
+		<location id="id62" x="221" y="42">
+			<name x="187" y="0">ReceivedBill</name>
+		</location>
+		<init ref="id51"/>
+		<transition id="id63">
+			<source ref="id54"/>
+			<target ref="id55"/>
+			<label kind="synchronisation" x="-280" y="-93">CSTLSAck!</label>
+			<label kind="assignment" x="-255" y="-68">t = 0</label>
+		</transition>
+		<transition id="id64">
+			<source ref="id51"/>
+			<target ref="id52"/>
+			<label kind="synchronisation" x="221" y="196">EVTCPReq?</label>
+			<label kind="assignment" x="103" y="225">t = 0</label>
+			<nail x="357" y="221"/>
+		</transition>
+		<transition id="id65">
+			<source ref="id61"/>
+			<target ref="id51"/>
+		</transition>
+		<transition id="id66">
+			<source ref="id62"/>
+			<target ref="id51"/>
+		</transition>
+		<transition id="id67">
+			<source ref="id60"/>
+			<target ref="id62"/>
+			<label kind="synchronisation" x="119" y="25">BillRSU?</label>
+			<label kind="assignment" x="111" y="42">t = 0</label>
+		</transition>
+		<transition id="id68">
+			<source ref="id56"/>
+			<target ref="id61"/>
+			<label kind="synchronisation" x="-518" y="93">AutReject!</label>
+		</transition>
+		<transition id="id69">
+			<source ref="id59"/>
+			<target ref="id60"/>
+			<label kind="synchronisation" x="-17" y="25">NotifyPT!</label>
+			<label kind="assignment" x="-33" y="42">t = 0</label>
+		</transition>
+		<transition id="id70">
+			<source ref="id58"/>
+			<target ref="id59"/>
+			<label kind="synchronisation" x="-203" y="25">CharEnd?</label>
+			<label kind="assignment" x="-203" y="42">t = 0</label>
+		</transition>
+		<transition id="id71">
+			<source ref="id57"/>
+			<target ref="id58"/>
+			<label kind="synchronisation" x="-364" y="25">KeyRSU!</label>
+			<label kind="assignment" x="-364" y="42">t = 0</label>
+		</transition>
+		<transition id="id72">
+			<source ref="id56"/>
+			<target ref="id57"/>
+			<label kind="synchronisation" x="-493" y="17">AutAck!</label>
+			<label kind="assignment" x="-526" y="42">t = 0</label>
+		</transition>
+		<transition id="id73">
+			<source ref="id55"/>
+			<target ref="id56"/>
+			<label kind="synchronisation" x="-535" y="-34">AutReq?</label>
+			<label kind="assignment" x="-544" y="-17">t = 0</label>
+		</transition>
+		<transition id="id74">
+			<source ref="id53"/>
+			<target ref="id54"/>
+			<label kind="synchronisation" x="17" y="-93">TLSReq?</label>
+			<label kind="assignment" x="59" y="-76">t = 0</label>
+		</transition>
+		<transition id="id75">
+			<source ref="id52"/>
+			<target ref="id53"/>
+			<label kind="synchronisation" x="255" y="-93">CSTCPRes!</label>
+			<label kind="assignment" x="248" y="-76">t = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>CSsdp</name>
+		<location id="id76" x="-306" y="-25">
+			<name x="-316" y="-59">CS</name>
+		</location>
+		<location id="id77" x="-85" y="-25">
+			<name x="-119" y="-59">ReceiveSDP</name>
+			<label kind="invariant" x="-95" y="-8">CSsdpT &lt;= 1000</label>
+		</location>
+		<location id="id78" x="51" y="-25">
+			<name x="41" y="-59">SendSDPResponse</name>
+			<label kind="invariant" x="41" y="-8">CSsdpT &lt;= 250</label>
+		</location>
+		<init ref="id76"/>
+		<transition id="id79">
+			<source ref="id78"/>
+			<target ref="id77"/>
+			<label kind="guard" x="1" y="-114">CSsdpT &lt;ConcurSDPResThr</label>
+			<nail x="-17" y="-136"/>
+		</transition>
+		<transition id="id80">
+			<source ref="id77"/>
+			<target ref="id76"/>
+			<label kind="guard" x="-136" y="-85">CSsdpT &gt;= 250</label>
+			<nail x="-178" y="-127"/>
+		</transition>
+		<transition id="id81">
+			<source ref="id78"/>
+			<target ref="id76"/>
+			<label kind="guard" x="0" y="8">CSsdpT &gt;=ConcurSDPResThr</label>
+			<label kind="assignment" x="-59" y="42">CSsdpT = 0</label>
+			<nail x="-136" y="51"/>
+		</transition>
+		<transition id="id82">
+			<source ref="id77"/>
+			<target ref="id78"/>
+			<label kind="synchronisation" x="-67" y="-42">SDPRes!</label>
+			<label kind="assignment" x="-67" y="-25">t = 0</label>
+		</transition>
+		<transition id="id83">
+			<source ref="id76"/>
+			<target ref="id77"/>
+			<label kind="synchronisation" x="-238" y="-42">SDPReq?</label>
+			<label kind="assignment" x="-255" y="-25">CSsdpT = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>PT</name>
+		<location id="id84" x="-136" y="-42">
+			<name x="-178" y="-85">ReceivedKey</name>
+		</location>
+		<location id="id85" x="34" y="-42">
+			<name x="-8" y="-85">CheckReq</name>
+			<label kind="invariant" x="-25" y="-25">pt &lt;= 2000</label>
+		</location>
+		<location id="id86" x="170" y="-42">
+			<name x="153" y="-85">Pass</name>
+		</location>
+		<location id="id87" x="-255" y="-42">
+			<name x="-265" y="-76">PT</name>
+		</location>
+		<location id="id88" x="170" y="-153">
+			<name x="144" y="-187">Charging</name>
+		</location>
+		<location id="id89" x="8" y="-153">
+			<name x="-2" y="-187">NotePT</name>
+			<label kind="invariant" x="-17" y="-136">pt &lt;= 2000</label>
+		</location>
+		<location id="id90" x="-255" y="-153">
+			<name x="-265" y="-187">SendBill</name>
+		</location>
+		<init ref="id87"/>
+		<transition id="id91">
+			<source ref="id90"/>
+			<target ref="id87"/>
+		</transition>
+		<transition id="id92">
+			<source ref="id89"/>
+			<target ref="id90"/>
+			<label kind="synchronisation" x="-76" y="-170">BillPT!</label>
+		</transition>
+		<transition id="id93">
+			<source ref="id88"/>
+			<target ref="id89"/>
+			<label kind="synchronisation" x="59" y="-170">NotifyPT?</label>
+			<label kind="assignment" x="35" y="-153">pt = 0</label>
+		</transition>
+		<transition id="id94">
+			<source ref="id86"/>
+			<target ref="id88"/>
+		</transition>
+		<transition id="id95">
+			<source ref="id87"/>
+			<target ref="id84"/>
+			<label kind="synchronisation" x="-221" y="-68">KeyPT?</label>
+		</transition>
+		<transition id="id96">
+			<source ref="id85"/>
+			<target ref="id86"/>
+			<label kind="synchronisation" x="68" y="-59">CharAck!</label>
+		</transition>
+		<transition id="id97">
+			<source ref="id84"/>
+			<target ref="id85"/>
+			<label kind="synchronisation" x="-85" y="-68">CharReq?</label>
+			<label kind="assignment" x="-85" y="-42">pt = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>RSU</name>
+		<location id="id98" x="-212" y="-59">
+			<name x="-222" y="-93">RSU</name>
+		</location>
+		<location id="id99" x="102" y="-59">
+			<name x="59" y="-93">ReceivedKey</name>
+			<label kind="invariant" x="92" y="-42">rt &lt;= 2000</label>
+		</location>
+		<location id="id100" x="102" y="51">
+			<name x="68" y="68">SendKey</name>
+		</location>
+		<location id="id101" x="-68" y="51">
+			<name x="-93" y="68">ReceivedBill</name>
+		</location>
+		<location id="id102" x="-212" y="51">
+			<name x="-238" y="68">SendBill</name>
+		</location>
+		<init ref="id98"/>
+		<transition id="id103">
+			<source ref="id99"/>
+			<target ref="id100"/>
+			<label kind="synchronisation" x="102" y="-21">KeyPT!</label>
+		</transition>
+		<transition id="id104">
+			<source ref="id102"/>
+			<target ref="id98"/>
+		</transition>
+		<transition id="id105">
+			<source ref="id101"/>
+			<target ref="id102"/>
+			<label kind="synchronisation" x="-178" y="17">BillRSU!</label>
+		</transition>
+		<transition id="id106">
+			<source ref="id100"/>
+			<target ref="id101"/>
+			<label kind="synchronisation" x="-51" y="25">BillPT?</label>
+		</transition>
+		<transition id="id107">
+			<source ref="id98"/>
+			<target ref="id99"/>
+			<label kind="synchronisation" x="-85" y="-76">KeyRSU?</label>
+			<label kind="assignment" x="-170" y="-59">rt = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>EVE</name>
+		<location id="id108" x="-484" y="17">
+			<name x="-494" y="-17">EVE</name>
+		</location>
+		<location id="id109" x="110" y="-102">
+			<name x="68" y="-144">TCPReqReceived</name>
+			<label kind="invariant" x="100" y="-85">evet &lt;= 2000</label>
+		</location>
+		<location id="id110" x="-34" y="-102">
+			<name x="-85" y="-144">TCPHandShake</name>
+			<label kind="invariant" x="-44" y="-85">evet &lt;= 2000</label>
+		</location>
+		<location id="id111" x="-323" y="-102">
+			<name x="-383" y="-144">TLSReqRecived</name>
+			<label kind="invariant" x="-333" y="-85">evet &lt;= 2000</label>
+		</location>
+		<location id="id112" x="-807" y="-102">
+			<name x="-833" y="-144">TLSReady</name>
+			<label kind="invariant" x="-817" y="-85">evet &lt;= 2000</label>
+		</location>
+		<location id="id113" x="-807" y="17">
+			<name x="-841" y="34">ReceivedEVInfo</name>
+		</location>
+		<init ref="id108"/>
+		<transition id="id114">
+			<source ref="id111"/>
+			<target ref="id112"/>
+			<label kind="synchronisation" x="-569" y="-119">EVETLSAck!</label>
+			<label kind="assignment" x="-561" y="-102">evet = 0</label>
+		</transition>
+		<transition id="id115">
+			<source ref="id110"/>
+			<target ref="id111"/>
+			<label kind="synchronisation" x="-178" y="-119">TLSReq?</label>
+			<label kind="assignment" x="-195" y="-93">evet = 0</label>
+		</transition>
+		<transition id="id116">
+			<source ref="id108"/>
+			<target ref="id109"/>
+			<label kind="synchronisation" x="-127" y="-17">EVToEVETCPReq?</label>
+			<label kind="assignment" x="-466" y="17">evet = 0</label>
+			<nail x="110" y="17"/>
+		</transition>
+		<transition id="id117">
+			<source ref="id113"/>
+			<target ref="id108"/>
+		</transition>
+		<transition id="id118">
+			<source ref="id112"/>
+			<target ref="id113"/>
+			<label kind="synchronisation" x="-807" y="-59">AutReqtoEVE?</label>
+		</transition>
+		<transition id="id119">
+			<source ref="id109"/>
+			<target ref="id110"/>
+			<label kind="synchronisation" x="0" y="-119">EVETCPRes!</label>
+			<label kind="assignment" x="-16" y="-102">evet = 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>EVEsdp</name>
+		<location id="id120" x="-238" y="-59">
+		</location>
+		<location id="id121" x="-59" y="-59">
+			<name x="-69" y="-93">DetectSDP</name>
+			<label kind="invariant" x="-69" y="-42">evesdpT &lt;= 1000</label>
+		</location>
+		<location id="id122" x="94" y="-59">
+			<name x="84" y="-93">SendFakeResponse</name>
+			<label kind="invariant" x="84" y="-42">evesdpT &lt;= 250</label>
+		</location>
+		<init ref="id120"/>
+		<transition id="id123">
+			<source ref="id122"/>
+			<target ref="id121"/>
+			<label kind="guard" x="26" y="-148">evesdpT&lt;=ConcurSDPResThr</label>
+			<nail x="8" y="-170"/>
+		</transition>
+		<transition id="id124">
+			<source ref="id121"/>
+			<target ref="id120"/>
+			<label kind="guard" x="-127" y="-127">evesdpT &gt;= 250</label>
+			<nail x="-153" y="-153"/>
+		</transition>
+		<transition id="id125">
+			<source ref="id122"/>
+			<target ref="id120"/>
+			<label kind="guard" x="-25" y="8">evesdpT&gt;=ConcurSDPResThr</label>
+			<nail x="-102" y="34"/>
+		</transition>
+		<transition id="id126">
+			<source ref="id121"/>
+			<target ref="id122"/>
+			<label kind="synchronisation" x="-41" y="-76">EveSDPRes!</label>
+			<label kind="assignment" x="-41" y="-59">evet = 0</label>
+		</transition>
+		<transition id="id127">
+			<source ref="id120"/>
+			<target ref="id121"/>
+			<label kind="synchronisation" x="-202" y="-76">SDPReq?</label>
+			<label kind="assignment" x="-202" y="-59">evesdpT = 0</label>
+			<nail x="-220" y="-59"/>
+		</transition>
+	</template>
+	<template>
+		<name>EVE2</name>
+		<location id="id128" x="-697" y="-127">
+			<name x="-707" y="-161">EVE2</name>
+		</location>
+		<location id="id129" x="-425" y="-127">
+			<name x="-459" y="-161">Intercepted</name>
+		</location>
+		<init ref="id128"/>
+		<transition id="id130">
+			<source ref="id129"/>
+			<target ref="id128"/>
+			<nail x="-569" y="-68"/>
+		</transition>
+		<transition id="id131">
+			<source ref="id128"/>
+			<target ref="id129"/>
+			<label kind="synchronisation" x="-586" y="-144">CharReqGet?</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+//Process = Template();
+// List one or more processes to be composed into a system.
+system EV,CS,EVE,EVE2,PT, RSU, CSsdp, EVEsdp;
+</system>
+	<queries>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment/>
+			<option key="--diagnostic" value="1"/>
+		</query>
+		<query>
+			<formula>A[] not (EV(0).Charging &amp;&amp; EV(1).Charging)</formula>
+			<comment/>
+		</query>
+		<query>
+			<formula>A[] not (CS.AcceptEV &amp;&amp; CS.RejectEV)</formula>
+			<comment/>
+		</query>
+		<query>
+			<formula>E&lt;&gt; EV(0).Charging</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-08-20 09:24:40 -0600">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; EV(0).EveIntercept</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-08-20 09:24:33 -0600">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; (EV(0).Charging &amp;&amp; CS.ReceivedBill)</formula>
+			<comment/>
+		</query>
+		<query>
+			<formula>A[] (EV(0).TCPReq implies EVclock[0] &lt;= 2000)</formula>
+			<comment/>
+		</query>
+		<query>
+			<formula>A[] (EV(0).WaitSDPResponse implies EVclock[0] &lt;= 250)</formula>
+			<comment/>
+		</query>
+		<query>
+			<formula>A[] not (CS.AcceptEV &amp;&amp; CS.RejectEV)</formula>
+			<comment/>
+		</query>
+		<query>
+			<formula>A[] not EVE.ReceivedEVInfo</formula>
+			<comment/>
+			<result outcome="failure" type="quality" timestamp="2026-07-02 09:15:02 -0600">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; EV(0).ReceivedSDPResponse</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-07-02 09:25:11 -0600">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; EV(0).EVESDPResponse</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2026-07-02 09:25:26 -0600">
+			</result>
+		</query>
+	</queries>
+</nta>
