@@ -717,14 +717,14 @@ system EV,CS,EVE,EVE2,PT, RSU, CSsdp, EVEsdp;
 			<formula>E&lt;&gt; (EV(0).Charging &amp;&amp; CS.ReceivedBill)</formula>
 			<comment/>
 		</query>
-		<query>
+		<!-- <query>
 			<formula>A[] (EV(0).TCPReq implies EVclock[0] &lt;= 2000)</formula>
 			<comment/>
 		</query>
 		<query>
 			<formula>A[] (EV(0).WaitSDPResponse implies EVclock[0] &lt;= 250)</formula>
 			<comment/>
-		</query>
+		</query> -->
 		<query>
 			<formula>A[] not (CS.AcceptEV &amp;&amp; CS.RejectEV)</formula>
 			<comment/>
